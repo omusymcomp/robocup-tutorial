@@ -8,6 +8,7 @@
     * rcssserver
     * rcssmonitor
     * helios-base
-* setup.sh：OMU-HAM、HELIOSを自動でコンパイルまで行う
+* setup_teams.sh：OMU-HAM、HELIOSを自動でコンパイルまで行う
 * start.sh：デフォルトのスクリプトでは動かないバイナリに利用する
 * fixed_teams_autogame.sh：特定のチームの試合実行を任意の回数だけ行う
+    * 年度や個人の環境によってパスが変わるため注意
