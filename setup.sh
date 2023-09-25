@@ -19,7 +19,7 @@ sudo apt install qtbase5-dev qt5-qmake
 
 # librcscのコンパイル
 cd ${TOOLS_DIR}
-git clone git@github.com:helios-base/librcsc.git
+git clone -b develop git@github.com:helios-base/librcsc.git
 cd librcsc
 ./bootstrap
 ./configure --prefix=${CONFIHURE_DIR}
@@ -28,7 +28,7 @@ make install
 
 # soccerwindow2のコンパイル
 cd ${TOOLS_DIR}
-git clone git@github.com:helios-base/soccerwindow2.git
+git clone -b develop git@github.com:helios-base/soccerwindow2.git
 cd soccerwindow2
 ./bootstrap
 ./configure --prefix=${CONFIHURE_DIR} --with-librcsc=${CONFIHURE_DIR}
@@ -37,7 +37,7 @@ make install
 
 # fedit2のコンパイル
 cd ${TOOLS_DIR}
-git clone git@github.com:helios-base/fedit2.git
+git clone -b develop git@github.com:helios-base/fedit2.git
 cd fedit2
 ./bootstrap
 ./configure --prefix=${CONFIHURE_DIR} --with-librcsc=${CONFIHURE_DIR}
@@ -46,7 +46,7 @@ make install
 
 # rcssserverのコンパイル
 cd ${TOOLS_DIR}
-git clone git@github.com:rcsoccersim/rcssserver.git
+git clone -b develop git@github.com:rcsoccersim/rcssserver.git
 cd rcssserver
 ./bootstrap
 ./configure --prefix=${CONFIHURE_DIR}
@@ -55,7 +55,7 @@ make install
 
 # rcssmonitorのコンパイル
 cd ${TOOLS_DIR}
-git clone git@github.com:rcsoccersim/rcssmonitor.git
+git clone -b develop git@github.com:rcsoccersim/rcssmonitor.git
 cd rcssmonitor
 ./bootstrap
 ./configure --prefix=${CONFIHURE_DIR} --with-librcsc=${CONFIHURE_DIR}
@@ -64,7 +64,7 @@ make install
 
 # helios-baseのコンパイル
 cd ${HELIOS_BASE_DIR}
-git clone git@github.com:helios-base/helios-base.git
+git clone -b develop git@github.com:helios-base/helios-base.git
 cd helios-base
 ./bootstrap
 ./configure --prefix=${CONFIHURE_DIR} --with-librcsc=${CONFIHURE_DIR}
