@@ -11,10 +11,11 @@ mkdir -p ${CONFIHURE_DIR}
 
 sudo apt-get install build-essential autoconf automake libtool 
 sudo apt-get install flex bison libboost-all-dev 
-sudo apt-get install libphonon-dev phonon-backend-gstreamer qt-sdk libaudio-dev 
-sudo apt-get install libxt-dev libpng12-dev libglib2.0-dev libsm-dev libice-dev
+#sudo apt-get install libphonon-dev phonon-backend-gstreamer qt-sdk libaudio-dev 
+sudo apt-get install libxt-dev libglib2.0-dev libsm-dev libice-dev
 sudo apt-get install libxi-dev libxrender-dev libfreetype6-dev libfontconfig1-dev
-sudo apt install qtbase5-dev qttools5-dev-tools qt5-default
+#sudo apt install qtbase5-dev qttools5-dev-tools qt5-default
+sudo apt install qtbase5-dev qt5-qmake
 
 # librcscのコンパイル
 cd ${TOOLS_DIR}
