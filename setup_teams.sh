@@ -19,13 +19,13 @@ make install
 
 # HAMのコンパイル
 cd ${HAM_DIR}
-git clone git@github.com:SCOM-RoboCup2D/omuHam.git
+git clone git@github.com:omusymcomp/omuHam.git
 cd omuHam
 chmod 744 tensorflow_c++_install.sh
 # 高負荷が長時間かかるため要注意
 ./tensorflow_c++_install.sh
 ./bootstrap
-./configure --prefix=${HAM_DIR} --with-librcsc=${HAM_DIR}
+./configure --with-librcsc=${HAM_DIR}
 make
 
 
