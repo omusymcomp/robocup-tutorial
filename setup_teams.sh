@@ -1,5 +1,8 @@
 #!/bin/bash
 
+sudo apt update -y
+sudo apt upgrade -y
+
 BASE_DIR="$HOME/rcss"
 HAM_DIR="${BASE_DIR}/HAM"
 HELIOS_DIR="${BASE_DIR}/HELIOS"
@@ -22,6 +25,8 @@ cd ${HAM_DIR}
 git clone git@github.com:omusymcomp/omuHam.git
 cd omuHam
 chmod 744 tensorflow_c++_install.sh
+# ubuntu22だとpythonコマンドがデフォルトでないので必須
+sudo apt install python-is-python3
 # 高負荷が長時間かかるため要注意
 ./tensorflow_c++_install.sh
 ./bootstrap
