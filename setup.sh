@@ -78,6 +78,6 @@ cd ${HELIOS_BASE_DIR}
 git clone -b develop git@github.com:helios-base/helios-base.git
 cd helios-base
 ./bootstrap
-./configure --prefix=${CONFIHURE_DIR} --with-librcsc=${CONFIHURE_DIR}
+./configure --with-librcsc=${CONFIHURE_DIR}
 make
 
