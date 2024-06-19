@@ -5,11 +5,9 @@ sudo apt upgrade -y
 
 BASE_DIR="$HOME/rcss"
 TOOLS_DIR="${BASE_DIR}/tools"
-HELIOS_BASE_DIR="${BASE_DIR}/teams/base_team"
-CONFIHURE_DIR="${BASE_DIR}/tools"
+CONFIGURE_DIR="${BASE_DIR}/tools"
 
-mkdir -p ${HELIOS_BASE_DIR}
-mkdir -p ${CONFIHURE_DIR}
+mkdir -p ${CONFIGURE_DIR}
 
 # 実行に必要なパッケージのインストール
 sudo apt-get install build-essential autoconf automake libtool 
@@ -33,7 +31,7 @@ cd ${TOOLS_DIR}
 git clone -b develop git@github.com:helios-base/librcsc.git
 cd librcsc
 ./bootstrap
-./configure --prefix=${CONFIHURE_DIR}
+./configure --prefix=${CONFIGURE_DIR}
 make
 make install
 
@@ -42,8 +40,8 @@ cd ${TOOLS_DIR}
 git clone -b develop git@github.com:helios-base/soccerwindow2.git
 cd soccerwindow2
 ./bootstrap
-./configure --prefix=${CONFIHURE_DIR} --with-librcsc=${CONFIHURE_DIR}
-make
+./configure --prefix=${CONFIGURE_DIR} --with-librcsc=${CONFIGURE_DIR}
+make -j 4
 make install
 
 # fedit2のコンパイル
@@ -51,8 +49,8 @@ cd ${TOOLS_DIR}
 git clone -b develop git@github.com:helios-base/fedit2.git
 cd fedit2
 ./bootstrap
-./configure --prefix=${CONFIHURE_DIR} --with-librcsc=${CONFIHURE_DIR}
-make
+./configure --prefix=${CONFIGURE_DIR} --with-librcsc=${CONFIGURE_DIR}
+make -j 4
 make install
 
 # rcssserverのコンパイル
@@ -60,8 +58,8 @@ cd ${TOOLS_DIR}
 git clone -b develop git@github.com:rcsoccersim/rcssserver.git
 cd rcssserver
 ./bootstrap
-./configure --prefix=${CONFIHURE_DIR}
-make
+./configure --prefix=${CONFIGURE_DIR}
+make -j 4
 make install
 
 # rcssmonitorのコンパイル
@@ -69,15 +67,7 @@ cd ${TOOLS_DIR}
 git clone -b develop git@github.com:rcsoccersim/rcssmonitor.git
 cd rcssmonitor
 ./bootstrap
-./configure --prefix=${CONFIHURE_DIR} --with-librcsc=${CONFIHURE_DIR}
-make
+./configure --prefix=${CONFIGURE_DIR} --with-librcsc=${CONFIGURE_DIR}
+make -j 4
 make install
-
-# helios-baseのコンパイル
-cd ${HELIOS_BASE_DIR}
-git clone -b develop git@github.com:helios-base/helios-base.git
-cd helios-base
-./bootstrap
-./configure --with-librcsc=${CONFIHURE_DIR}
-make
 
