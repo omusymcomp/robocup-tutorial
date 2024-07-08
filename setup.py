@@ -7,7 +7,8 @@ def main():
     parser.add_argument("-d", "--base_dir", dest="base_dir", default="$HOME/rcss", help="環境構築をするベースディレクトリを指定")    
     args = parser.parse_args()
     setup_tools = SetupTools(args)
-    print(setup_tools.base_dir, setup_tools.tools_dir, setup_tools.helios_base_dir, setup_tools.configure_dir)
+    setup_tools.upgrade_packages()
+
 
 class SetupTools:
     def __init__(self, args):
@@ -16,8 +17,25 @@ class SetupTools:
         self.helios_base_dir = self.base_dir + "/teams/base_team"
         self.configure_dir = self.base_dir + "/tools"
 
+    def upgrade_packages(self):
+        self.run_command("sudo apt update -y")
+        self.run_command("sudo apt upgrade -y")
 
-
+    def run_command(self, command):
+        try:
+            # shell=TrueはOSコマンドインジェクションの恐れがあるので要注意
+            # 現状は各個人で使うので問題ないはず
+            result = subprocess.run(command, check=True, text=True, capture_output=True, shell=True)
+            print(result.stdout)
+            print(f"実行が正常に終了しました: {command}\n\n")
+        except subprocess.CalledProcessError as e:
+            # コマンドがエラーを返した場合
+            print(e.stderr)
+            print(f"コマンドにエラーが発生しました: {command}\n\n")
+        except Exception as e:
+            # その他の例外
+            print(e.stderr)
+            print(f"想定していないエラーが発生しました: {command}\n\n")
 
 
 #sudo apt update -y
