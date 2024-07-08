@@ -7,7 +7,7 @@ def main():
     parser.add_argument("-d", "--base_dir", dest="base_dir", default="$HOME/rcss", help="環境構築をするベースディレクトリを指定")    
     args = parser.parse_args()
     setup_tools = SetupTools(args)
-    setup_tools.upgrade_packages()
+    setup_tools.make_directories()
 
 
 class SetupTools:
@@ -37,18 +37,11 @@ class SetupTools:
             print(e.stderr)
             print(f"想定していないエラーが発生しました: {command}\n\n")
 
+    def make_directories(self):
+        self.run_command(f"mkdir -p {self.helios_base_dir}")
+        self.run_command(f"mkdir -p {self.configure_dir}")
 
-#sudo apt update -y
-#sudo apt upgrade -y
-#
-#BASE_DIR="$HOME/rcss"
-#TOOLS_DIR="${BASE_DIR}/tools"
-#HELIOS_BASE_DIR="${BASE_DIR}/teams/base_team"
-#CONFIHURE_DIR="${BASE_DIR}/tools"
-#
-#mkdir -p ${HELIOS_BASE_DIR}
-#mkdir -p ${CONFIHURE_DIR}
-#
+
 ## 実行に必要なパッケージのインストール
 #sudo apt-get install build-essential autoconf automake libtool 
 #sudo apt-get install flex bison libboost-all-dev 
