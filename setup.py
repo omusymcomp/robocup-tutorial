@@ -9,7 +9,7 @@ def main():
     parser.add_argument("-d", "--base_dir", dest="base_dir", default="$HOME/rcss", help="環境構築をするベースディレクトリを指定")    
     args = parser.parse_args()
     setup_tools = SetupTools(args)
-    setup_tools.install_librcsc()
+    setup_tools.install_soccerwindow2()
 
 
 class SetupTools:
@@ -18,10 +18,6 @@ class SetupTools:
         self.tools_dir = self.base_dir + "/tools"
         self.helios_base_dir = self.base_dir + "/teams/base_team"
         self.configure_dir = self.base_dir + "/tools"
-
-    def upgrade_packages(self):
-        self.run_command("sudo apt update -y")
-        self.run_command("sudo apt upgrade -y")
 
     def run_command(self, command):
         try:
@@ -38,6 +34,10 @@ class SetupTools:
             # その他の例外
             print(e.stderr)
             print(f"想定していないエラーが発生しました: {command}\n\n")
+
+    def upgrade_packages(self):
+        self.run_command("sudo apt update -y")
+        self.run_command("sudo apt upgrade -y")
 
     def make_directories(self):
         self.run_command(f"mkdir -p {self.helios_base_dir}")
@@ -61,31 +61,34 @@ class SetupTools:
         self.run_command("echo 'export RCSSMONITOR=sswindow2' >> ~/.bashrc")
 
     def install_librcsc(self):
-        print(f"{self.tools_dir}/librcsc/bootstrap")
         # librcscのコンパイル
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/librcsc"):
             self.run_command("git clone -b develop git@github.com:helios-base/librcsc.git")
         else:
-            print(f"{self.tools_dir}"+"/librcscが存在するため、git cloneをスキップします")
+            print(f"{self.tools_dir}"+"/librcsc が存在するため、git cloneをスキップします")
         os.chdir(f"./librcsc")
         self.run_command(f"{self.tools_dir}/librcsc/bootstrap")
         self.run_command(f"{self.tools_dir}/librcsc/configure --prefix={self.configure_dir}")
         self.run_command(f"make")
         self.run_command(f"make install")
 
+    def install_soccerwindow2(self):
+        # soccerwindow2のコンパイル
+        self.run_command(f"mkdir -p {self.configure_dir}")
+        os.chdir(f"{self.tools_dir}")
+        if not os.path.exists(self.tools_dir+"/soccerwindow2"):
+            self.run_command("git clone -b develop git@github.com:helios-base/soccerwindow2.git")
+        else:
+            print(f"{self.tools_dir}"+"/soccerwindow2 が存在するため、git cloneをスキップします")
+        os.chdir(f"./soccerwindow2")
+        self.run_command(f"{self.tools_dir}/soccerwindow2/bootstrap")
+        self.run_command(f"{self.tools_dir}/soccerwindow2/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
+        self.run_command(f"make")
+        self.run_command(f"make install")
 
-#
-## soccerwindow2のコンパイル
-#cd ${TOOLS_DIR}
-#git clone -b develop git@github.com:helios-base/soccerwindow2.git
-#cd soccerwindow2
-#./bootstrap
-#./configure --prefix=${CONFIHURE_DIR} --with-librcsc=${CONFIHURE_DIR}
-#make
-#make install
-#
+
 ## fedit2のコンパイル
 #cd ${TOOLS_DIR}
 #git clone -b develop git@github.com:helios-base/fedit2.git
