@@ -102,6 +102,20 @@ class SetupTools:
         self.run_command(f"make")
         self.run_command(f"make install")
 
+    def install_rcssmonitor(self):
+        # rcssmonitorのコンパイル
+        self.run_command(f"mkdir -p {self.configure_dir}")
+        os.chdir(f"{self.tools_dir}")
+        if not os.path.exists(self.tools_dir+"/rcssmonitor"):
+            self.run_command("git clone -b develop git@github.com:rcsoccersim/rcssmonitor.git")
+        else:
+            print(f"{self.tools_dir}"+"/rcssmonitor が存在するため、git cloneをスキップします")
+        os.chdir(f"./rcssmonitor")
+        self.run_command(f"{self.tools_dir}/rcssmonitor/bootstrap")
+        self.run_command(f"{self.tools_dir}/rcssmonitor/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
+        self.run_command(f"make")
+        self.run_command(f"make install")
+
     def install_fedit2(self):
         # fedit2のコンパイル
         self.run_command(f"mkdir -p {self.configure_dir}")
@@ -118,15 +132,7 @@ class SetupTools:
 
     
 
-## rcssmonitorのコンパイル
-#cd ${TOOLS_DIR}
-#git clone -b develop git@github.com:rcsoccersim/rcssmonitor.git
-#cd rcssmonitor
-#./bootstrap
-#./configure --prefix=${CONFIHURE_DIR} --with-librcsc=${CONFIHURE_DIR}
-#make
-#make install
-#
+
 ## helios-baseのコンパイル
 #cd ${HELIOS_BASE_DIR}
 #git clone -b develop git@github.com:helios-base/helios-base.git
