@@ -218,7 +218,7 @@ class SetupTools:
         # HELIOSのコンパイル
         os.chdir(f"{self.helios_dir}")
         if not os.path.exists(self.helios_dir+"/helios"):
-            self.run_command("git clone git@github.com:helios-base/helios.git")
+            self.run_command("git clone -b develop git@github.com:helios-base/helios.git")
         else:
             print(f"{self.helios_dir}"+"/helios が存在するため、git cloneをスキップします")
         os.chdir(f"./helios")
