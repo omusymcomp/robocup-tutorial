@@ -125,6 +125,21 @@ class SetupTools:
         self.run_command(f"make")
         self.run_command(f"make install")
 
+    def install_librcsc_for_helios(self):
+        # librcscのコンパイル
+        # HELIOS用librcscは、$HOME/rcss/HELIOSにある想定
+        self.run_command(f"mkdir -p {self.helios_dir}")
+        os.chdir(f"{self.helios_dir}")
+        if not os.path.exists(self.helios_dir+"/librcsc"):
+            self.run_command("git clone -b develop git@github.com:helios-base/librcsc.git")
+        else:
+            print(f"{self.helios_dir}"+"/librcsc が存在するため、git cloneをスキップします")
+        os.chdir(f"./librcsc")
+        self.run_command(f"{self.helios_dir}/librcsc/bootstrap")
+        self.run_command(f"{self.helios_dir}/librcsc/configure --prefix={self.helios_dir}")
+        self.run_command(f"make")
+        self.run_command(f"make install")
+
     def install_rcssserver(self):
         # rcssserverのコンパイル
         self.run_command(f"mkdir -p {self.configure_dir}")
@@ -197,7 +212,19 @@ class SetupTools:
         self.run_command(f"make")
 
     def install_helios(self):
-        pass
+        self.run_command(f"mkdir -p {self.helios_dir}")
+        # HELIOS用のlibrcscのコンパイル
+        self.install_librcsc_for_helios()
+        # HELIOSのコンパイル
+        os.chdir(f"{self.helios_dir}")
+        if not os.path.exists(self.helios_dir+"/helios"):
+            self.run_command("git clone git@github.com:helios-base/helios.git")
+        else:
+            print(f"{self.helios_dir}"+"/helios が存在するため、git cloneをスキップします")
+        os.chdir(f"./helios")
+        self.run_command(f"{self.helios_dir}/helios/bootstrap")
+        self.run_command(f"{self.helios_dir}/helios/configure --with-librcsc={self.helios_dir}")
+        self.run_command(f"make")
 
 
 if __name__ == "__main__":
