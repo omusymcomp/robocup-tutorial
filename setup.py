@@ -7,7 +7,7 @@ def main():
     parser.add_argument("-d", "--base_dir", dest="base_dir", default="$HOME/rcss", help="環境構築をするベースディレクトリを指定")    
     args = parser.parse_args()
     setup_tools = SetupTools(args)
-    setup_tools.install_essential_packages()
+    setup_tools.add_environment_variables()
 
 
 class SetupTools:
@@ -42,7 +42,7 @@ class SetupTools:
         self.run_command(f"mkdir -p {self.configure_dir}")
 
     def install_essential_packages(self):
-        ## 実行に必要なパッケージのインストール
+        # 実行に必要なパッケージのインストール
         self.run_command("sudo apt-get install build-essential autoconf automake libtool")
         self.run_command("sudo apt-get install flex bison libboost-all-dev")
         self.run_command("sudo apt-get install libphonon-dev phonon-backend-gstreamer qt-sdk libaudio-dev")
@@ -51,15 +51,14 @@ class SetupTools:
         self.run_command("sudo apt install qtbase5-dev qttools5-dev-tools qt5-default")
         self.run_command("sudo apt install qtbase5-dev qt5-qmake")
 
+    def add_environment_variables(self):
+        # 環境変数の追加
+        # 関数呼び出しごとに追記されるので要注意
+        self.run_command("echo 'export LD_LIBRARY_PATH=$HOME/rcss/tools/lib:$LD_LIBRARY_PATH' >> ~/.bashrc")
+        self.run_command("echo 'export PATH=$HOME/rcss/tools/bin:$PATH' >> ~/.profile")
+        self.run_command("echo 'export RCSSMONITOR=sswindow2' >> ~/.bashrc")
 
-#
-## 環境変数の追加
-##実行ごとに追記されるので要注意
-#echo 'export LD_LIBRARY_PATH=$HOME/rcss/tools/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
-#echo 'export PATH=$HOME/rcss/tools/bin:$PATH' >> ~/.profile
-##echo 'export RCSSMONITOR=sswindow2' >> ~/.bashrc
-#
-#
+
 ## librcscのコンパイル
 #cd ${TOOLS_DIR}
 #git clone -b develop git@github.com:helios-base/librcsc.git
