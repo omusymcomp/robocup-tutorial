@@ -9,7 +9,7 @@ def main():
     parser.add_argument("-d", "--base_dir", dest="base_dir", default="$HOME/rcss", help="環境構築をするベースディレクトリを指定")    
     args = parser.parse_args()
     setup_tools = SetupTools(args)
-    setup_tools.install_soccerwindow2()
+    setup_tools.install_fedit2()
 
 
 class SetupTools:
@@ -88,16 +88,21 @@ class SetupTools:
         self.run_command(f"make")
         self.run_command(f"make install")
 
+    def install_fedit2(self):
+        # soccerwindow2のコンパイル
+        self.run_command(f"mkdir -p {self.configure_dir}")
+        os.chdir(f"{self.tools_dir}")
+        if not os.path.exists(self.tools_dir+"/fedit2"):
+            self.run_command("git clone -b develop git@github.com:helios-base/fedit2.git")
+        else:
+            print(f"{self.tools_dir}"+"/fedit2 が存在するため、git cloneをスキップします")
+        os.chdir(f"./fedit2")
+        self.run_command(f"{self.tools_dir}/fedit2/bootstrap")
+        self.run_command(f"{self.tools_dir}/fedit2/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
+        self.run_command(f"make")
+        self.run_command(f"make install")
 
-## fedit2のコンパイル
-#cd ${TOOLS_DIR}
-#git clone -b develop git@github.com:helios-base/fedit2.git
-#cd fedit2
-#./bootstrap
-#./configure --prefix=${CONFIHURE_DIR} --with-librcsc=${CONFIHURE_DIR}
-#make
-#make install
-#
+
 ## rcssserverのコンパイル
 #cd ${TOOLS_DIR}
 #git clone -b develop git@github.com:rcsoccersim/rcssserver.git
