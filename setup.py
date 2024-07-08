@@ -1,14 +1,17 @@
 import subprocess
-
+import argparse
 
 
 def main():
-    setup_tools = SetupTools()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--base_dir", dest="base_dir", default="$HOME/rcss", help="環境構築をするベースディレクトリを指定")    
+    args = parser.parse_args()
+    setup_tools = SetupTools(args)
     print(setup_tools.base_dir, setup_tools.tools_dir, setup_tools.helios_base_dir, setup_tools.configure_dir)
 
 class SetupTools:
-    def __init__(self):
-        self.base_dir = "$HOME/rcss"
+    def __init__(self, args):
+        self.base_dir = args.base_dir
         self.tools_dir = self.base_dir + "/tools"
         self.helios_base_dir = self.base_dir + "/teams/base_team"
         self.configure_dir = self.base_dir + "/tools"
