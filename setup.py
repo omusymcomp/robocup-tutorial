@@ -6,10 +6,49 @@ import os
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--base_dir", dest="base_dir", default="$HOME/rcss", help="環境構築をするベースディレクトリを指定")    
+    parser.add_argument("-d", "--base_dir", dest="base_dir", default="$HOME/rcss", help="環境構築をするベースディレクトリを指定")
+    parser.add_argument("-t", "--install_target", dest="install_target", default="minisetup", 
+                        choices=["all", "minisetup", "tools", "librcsc", "rcssserver", 
+                                 "soccerwindow2", "rcssmonitor", "fedit2"], 
+                        help="インストールする対象を指定する。allはすべて、minisetupは実行に必要な最小構成、それ以外の場合は指定した名前のツール・チームをインストールする")
+    parser.add_argument("--upgrade_packages", action="store_true", dest="upgrade_packages", help="コンパイル実行前にパッケージアップデートをする場合は指定する")
+    parser.add_argument("--is_installation_of_essential_packages", action="store_true", dest="is_installation_of_essential_packages", 
+                        help="コンパイル実行前にパッケージアップデートをする場合は指定する")
+    parser.add_argument("--add_environment_variable", action="store_true", dest="add_environment_variable", help="環境変数を追加する場合は指定する。初回セットアップ時は必須")
     args = parser.parse_args()
+
+
     setup_tools = SetupTools(args)
-    setup_tools.install_helios_base()
+    if args.upgrade_packages:
+        setup_tools.upgrade_packages()
+    
+    if args.is_installation_of_essential_packages:
+        setup_tools.install_essential_packages()
+
+    if args.add_environment_variable:
+        setup_tools.add_environment_variables()
+
+    if args.install_target == "all":
+        setup_tools.install_librcsc()
+        setup_tools.install_rcssserver()
+        setup_tools.install_soccerwindow2()
+        setup_tools.install_rcssmonitor()
+        setup_tools.install_fedit2()
+        setup_tools.install_helios_base()
+    elif args.install_target == "minisetup":
+        setup_tools.install_librcsc()
+        setup_tools.install_rcssserver()
+        setup_tools.install_soccerwindow2()
+        setup_tools.install_helios_base()
+    elif args.install_target == "tools":
+        setup_tools.install_librcsc()
+        setup_tools.install_rcssserver()
+        setup_tools.install_soccerwindow2()
+        setup_tools.install_rcssmonitor()
+        setup_tools.install_fedit2()
+    else:
+        called_method = getattr(setup_tools, f"install_{args.install_target}")
+        called_method()
 
 
 class SetupTools:
@@ -38,10 +77,6 @@ class SetupTools:
     def upgrade_packages(self):
         self.run_command("sudo apt update -y")
         self.run_command("sudo apt upgrade -y")
-
-    def make_directories(self):
-        self.run_command(f"mkdir -p {self.helios_base_dir}")
-        self.run_command(f"mkdir -p {self.configure_dir}")
 
     def install_essential_packages(self):
         # 実行に必要なパッケージのインストール
