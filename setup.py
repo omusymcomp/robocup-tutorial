@@ -1,5 +1,7 @@
 import subprocess
 import argparse
+import sys
+import os
 
 
 def main():
@@ -7,7 +9,7 @@ def main():
     parser.add_argument("-d", "--base_dir", dest="base_dir", default="$HOME/rcss", help="環境構築をするベースディレクトリを指定")    
     args = parser.parse_args()
     setup_tools = SetupTools(args)
-    setup_tools.add_environment_variables()
+    setup_tools.install_librcsc()
 
 
 class SetupTools:
@@ -58,15 +60,22 @@ class SetupTools:
         self.run_command("echo 'export PATH=$HOME/rcss/tools/bin:$PATH' >> ~/.profile")
         self.run_command("echo 'export RCSSMONITOR=sswindow2' >> ~/.bashrc")
 
+    def install_librcsc(self):
+        print(f"{self.tools_dir}/librcsc/bootstrap")
+        # librcscのコンパイル
+        self.run_command(f"mkdir -p {self.configure_dir}")
+        os.chdir(f"{self.tools_dir}")
+        if not os.path.exists(self.tools_dir+"/librcsc"):
+            self.run_command("git clone -b develop git@github.com:helios-base/librcsc.git")
+        else:
+            print(f"{self.tools_dir}"+"/librcscが存在するため、git cloneをスキップします")
+        os.chdir(f"./librcsc")
+        self.run_command(f"{self.tools_dir}/librcsc/bootstrap")
+        self.run_command(f"{self.tools_dir}/librcsc/configure --prefix={self.configure_dir}")
+        self.run_command(f"make")
+        self.run_command(f"make install")
 
-## librcscのコンパイル
-#cd ${TOOLS_DIR}
-#git clone -b develop git@github.com:helios-base/librcsc.git
-#cd librcsc
-#./bootstrap
-#./configure --prefix=${CONFIHURE_DIR}
-#make
-#make install
+
 #
 ## soccerwindow2のコンパイル
 #cd ${TOOLS_DIR}
