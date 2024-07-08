@@ -56,6 +56,7 @@ class SetupTools:
         self.base_dir = args.base_dir
         self.tools_dir = self.base_dir + "/tools"
         self.helios_base_dir = self.base_dir + "/HELIOS-Base"
+        self.helios_dir = self.base_dir + "/HELIOS"
         self.configure_dir = self.base_dir + "/tools"
 
     def run_command(self, command):
@@ -194,6 +195,9 @@ class SetupTools:
         self.run_command(f"{self.helios_base_dir}/helios-base/bootstrap")
         self.run_command(f"{self.helios_base_dir}/helios-base/configure --with-librcsc={self.helios_base_dir}")
         self.run_command(f"make")
+
+    def install_helios(self):
+        pass
 
 
 if __name__ == "__main__":
