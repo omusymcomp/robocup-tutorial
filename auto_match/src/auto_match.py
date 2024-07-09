@@ -24,6 +24,24 @@ class AutoMatch:
         self.left_team_dir = args.base_dir + "/" + args.left_team_name + "/start.sh"
         self.right_team_dir = args.base_dir + "/" + args.right_team_name + "/start.sh"
 
+    def run_command(self, command):
+        try:
+            # shell=TrueはOSコマンドインジェクションの恐れがあるので要注意
+            # 現状は各個人で使うので問題ないはず
+            result = subprocess.run(command, check=True, text=True, capture_output=True, shell=True)
+            print(result.stdout)
+            print(f"実行が正常に終了しました: {command}\n\n")
+        except subprocess.CalledProcessError as e:
+            # コマンドがエラーを返した場合
+            print(e.stderr)
+            print(f"コマンドにエラーが発生しました: {command}\n\n")
+        except Exception as e:
+            # その他の例外
+            print(e.stderr)
+            print(f"想定していないエラーが発生しました: {command}\n\n")
+
+    def execute_matches():
+        pass
 
 
 if __name__ == "__main__":
