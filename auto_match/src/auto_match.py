@@ -8,8 +8,8 @@ from datetime import datetime
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--base_dir", dest="base_dir", default="$HOME/rcss", help="環境構築されているベースディレクトリを指定")
-    parser.add_argument("-l", "--left_team_name", dest="left_team_name", default="cyrus2022", help="左側のチーム名を指定")
-    parser.add_argument("-r", "--right_team_name", dest="right_team_name", default="yushan2022", help="右側のチーム名を指定")
+    parser.add_argument("-l", "--left_team_name", dest="left_team_name", default="helios2022", help="左側のチーム名を指定")
+    parser.add_argument("-r", "--right_team_name", dest="right_team_name", default="cyrus2022", help="右側のチーム名を指定")
     parser.add_argument("-n", "--match_number", dest="match_number", default=3, type=int, help="試合を行う回数を指定する")
     args = parser.parse_args()
     setup_tools = AutoMatch(args)
