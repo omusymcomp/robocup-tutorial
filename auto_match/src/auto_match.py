@@ -23,14 +23,14 @@ class AutoMatch:
         self.formatted_date_time = now.strftime("%Y_%m%d_%H%M_%S")
         self.log_dir = args.base_dir + "/log_analysis/log/" + self.formatted_date_time
         self.team_binary_dir = args.base_dir + "/teams"
-        self.left_team_dir = args.base_dir + "/" + args.left_team_name + "/start.sh"
-        self.right_team_dir = args.base_dir + "/" + args.right_team_name + "/start.sh"
+        self.left_team_dir = self.team_binary_dir + "/" + args.left_team_name + "/start.sh"
+        self.right_team_dir = self.team_binary_dir + "/" + args.right_team_name + "/start.sh"
 
     def run_command(self, command):
         try:
             # shell=TrueはOSコマンドインジェクションの恐れがあるので要注意
             # 現状は各個人で使うので問題ないはず
-            result = subprocess.run(command, check=True, text=True, capture_output=True, shell=True)
+            result = subprocess.run(command, check=True, text=True, shell=True)
             print(result.stdout)
             print(f"実行が正常に終了しました: {command}\n\n")
         except subprocess.CalledProcessError as e:
@@ -43,7 +43,6 @@ class AutoMatch:
             print(f"想定していないエラーが発生しました: {command}\n\n")
 
     def execute_matches(self, args):
-        #os.chdir(f"./librcsc")
         mode = "true"
         for counter in range(args.match_number):
             execute_command = f"{args.base_dir}/tools/bin/rcssserver server::auto_mode = 1 " \
