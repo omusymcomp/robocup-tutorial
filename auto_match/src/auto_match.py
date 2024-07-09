@@ -18,7 +18,7 @@ class AutoMatch:
         now = datetime.now()
         formatted_date_time = now.strftime("%Y_%m%d_%H%M_%S")
         self.log_dir = args.base_dir + "/log_analysis/log/" + formatted_date_time
-
+        self.team_binary_dir = args.base_dir + "/teams"
 
 
 
