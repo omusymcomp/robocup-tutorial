@@ -46,19 +46,18 @@ class AutoMatch:
         #os.chdir(f"./librcsc")
         mode = "true"
         for counter in range(args.match_number):
-            execute_command = f"{args.base_dir}/tools/bin/rcssserver server::auto_mode = 1" \
-                                                                   f"server::synch_mode = ${mode}" \
-                                                                   f"server::team_l_start = {self.left_team_dir} server::team_r_start = {self.right_team_dir}" \
-                                                                   f"server::kick_off_wait = 50" \
-				                                                   f"server::half_time = 300" \
-				                                                   f"server::nr_normal_halfs = 2 server::nr_extra_halfs = 0" \
-                                                                   f"server::penalty_shoot_outs = 0" \
-                                                                   f"server::game_logging = 1 server::text_logging = 1" \
-                                                                   f"server::game_log_dir = {self.log_dir} server::text_log_dir = {self.log_dir}" \
+            execute_command = f"{args.base_dir}/tools/bin/rcssserver server::auto_mode = 1 " \
+                                                                   f"server::synch_mode = {mode} " \
+                                                                   f"server::team_l_start = {self.left_team_dir} server::team_r_start = {self.right_team_dir} " \
+                                                                   f"server::kick_off_wait = 50 " \
+				                                                   f"server::half_time = 300 " \
+				                                                   f"server::nr_normal_halfs = 2 server::nr_extra_halfs = 0 " \
+                                                                   f"server::penalty_shoot_outs = 0 " \
+                                                                   f"server::game_logging = 1 server::text_logging = 1 " \
+                                                                   f"server::game_log_dir = {self.log_dir} server::text_log_dir = {self.log_dir} " \
                                                                    f"2>&1 | tee {self.log_dir}/{self.formatted_date_time}_match{counter}.log"
 
-
-            #self.run_command(f"{execute_command}")
+            self.run_command(f"{execute_command}")
 
 
 if __name__ == "__main__":
