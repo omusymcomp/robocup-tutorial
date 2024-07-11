@@ -19,8 +19,8 @@ def main():
                         help="試合を行う回数を指定する")
     
     args = parser.parse_args()
-    setup_tools = AutoMatch(args)
-    setup_tools.execute_matches(args)
+    auto_match = AutoMatch(args)
+    auto_match.execute_matches(args)
 
 
 
@@ -30,8 +30,18 @@ class AutoMatch:
         self.formatted_date_time = now.strftime("%Y_%m%d_%H%M_%S")
         self.log_dir = args.base_dir + "/log_analysis/log/" + self.formatted_date_time
         self.team_binary_dir = args.base_dir + "/teams"
-        self.left_team_dir = self.team_binary_dir + "/" + args.left_team_name + "/start.sh"
-        self.right_team_dir = self.team_binary_dir + "/" + args.right_team_name + "/start.sh"
+        self.left_team_dir = f"{self.team_binary_dir}/{args.left_team_name}/start.sh" if self.is_binary_team(args.left_team_name) \
+                                                                                      else f"{args.base_dir}/{args.left_team_name}/{args.left_team_name.lower()}/src/start.sh" 
+        self.right_team_dir = f"{self.team_binary_dir}/{args.right_team_name}/start.sh" if self.is_binary_team(args.right_team_name) \
+                                                                                      else f"{args.base_dir}/{args.right_team_name}/{args.right_team_name.lower()}/src/start.sh"
+
+    def is_binary_team(self, team_name):
+        # バイナリだけのチームなのか、ソースコードもあるチームなのかを判定する
+        # TODO：HAMも実装するなら条件文に追加する
+        if team_name == "HELIOS" or team_name == "HELIOS-Base":
+            return False
+        else:
+            return True
 
     def run_command(self, command):
         try:
