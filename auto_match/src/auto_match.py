@@ -45,7 +45,7 @@ class AutoMatch:
         else:
             self.left_team_path_list.append(self.get_team_path(args.base_dir, args.left_team_name))
 
-        if args.right_team_name ==" custom":
+        if args.right_team_name == "custom":
             self.right_team_path_list = self.get_custom_team_path_list()
         else:
             self.right_team_path_list.append(self.get_team_path(args.base_dir, args.right_team_name))
@@ -117,9 +117,9 @@ class AutoMatch:
                                                                         f"server::game_log_dir = {self.log_dir} server::text_log_dir = {self.log_dir} "
                                                                         #f"server::fixed_teamname_l = {args.fixed_teamname_l} " \
                                                                         #f"server::fixed_teamname_r = {args.fixed_teamname_r} " \
-                                                                        
-            self.run_command(f"{execute_command}")
-            self.output_log(counter)
+                                                                            
+                self.run_command(f"{execute_command}")
+                self.output_log(counter)
 
     def output_log(self, counter):
         # pythonでは$HOMEをそのまま認識でないので、/home/ユーザ名 に置換
