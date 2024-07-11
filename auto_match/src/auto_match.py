@@ -16,6 +16,10 @@ def main():
     parser.add_argument("-r", "--right_team_name", dest="right_team_name", default="cyrus2022", 
                         choices=["HELIOS", "HELIOS-Base", "yushan2022", "cyrus2022", 
                                  "helios2022", "fra-united2022", "alice2022"], help="右側のチーム名を指定")
+    parser.add_argument("-ln", "--visible_left_team_name", dest="visible_left_team_name", default=None, 
+                        help="表記上の左側のチームの名前を指定する。デフォルトだと登録されている名前をそのまま利用する")
+    parser.add_argument("-rn", "--visible_right_team_name", dest="visible_right_team_name", default=None, 
+                        help="表記上の右側のチームの名前を指定する。デフォルトだと登録されている名前をそのまま利用する")
     parser.add_argument("-n", "--match_number", dest="match_number", default=3, type=int, 
                         help="試合を行う回数を指定する")
     parser.add_argument("--is_synch_mode", action="store_true", dest="is_synch_mode", help="synch_modeで実行する場合に指定する")
@@ -36,7 +40,19 @@ class AutoMatch:
                                                                                       else f"{args.base_dir}/{args.left_team_name}/{args.left_team_name.lower()}/src/start.sh" 
         self.right_team_dir = f"{self.team_binary_dir}/{args.right_team_name}/start.sh" if self.is_binary_team(args.right_team_name) \
                                                                                       else f"{args.base_dir}/{args.right_team_name}/{args.right_team_name.lower()}/src/start.sh"
+        
+        left_team_path = self.get_team_path(args.base_dir, args.left_team_name)
+        right_team_path = self.get_team_path(args.base_dir, args.right_team_name)
+        self.left_start_command = self.add_teamname_option(left_team_path, args.visible_left_team_name)
+        self.right_start_command = self.add_teamname_option(right_team_path, args.visible_right_team_name)
+
         self.output_text = None
+
+    def get_team_path(self, base_dir, team_name):
+        if self.is_binary_team(team_name):
+            return f"{self.team_binary_dir}/{team_name}/start.sh"    
+        else:
+            return f"{base_dir}/{team_name}/{team_name.lower()}/src/start.sh" 
 
     def is_binary_team(self, team_name):
         # バイナリだけのチームなのか、ソースコードもあるチームなのかを判定する
@@ -45,6 +61,12 @@ class AutoMatch:
             return False
         else:
             return True
+        
+    def add_teamname_option(self, team_path, visible_team_name):
+        if visible_team_name is None:
+            return team_path
+        else:
+            return f"{team_path} -t {visible_team_name}"
 
     def run_command(self, command):
         try:
