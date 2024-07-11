@@ -18,6 +18,7 @@ def main():
                                  "helios2022", "fra-united2022", "alice2022"], help="右側のチーム名を指定")
     parser.add_argument("-n", "--match_number", dest="match_number", default=3, type=int, 
                         help="試合を行う回数を指定する")
+    parser.add_argument("--is_synch_mode", action="store_true", dest="is_synch_mode", help="synch_modeで実行する場合に指定する")
     
     args = parser.parse_args()
     auto_match = AutoMatch(args)
@@ -63,10 +64,9 @@ class AutoMatch:
             print(f"想定していないエラーが発生しました: {command}\n\n")
 
     def execute_matches(self, args):
-        mode = "true"
         for counter in range(args.match_number):
             execute_command = f"{args.base_dir}/tools/bin/rcssserver server::auto_mode = 1 " \
-                                                                   f"server::synch_mode = {mode} " \
+                                                                   f"server::synch_mode = {args.is_synch_mode} " \
                                                                    f"server::team_l_start = {self.left_team_dir} server::team_r_start = {self.right_team_dir} " \
                                                                    f"server::kick_off_wait = 50 " \
 				                                                   f"server::half_time = 300 " \
