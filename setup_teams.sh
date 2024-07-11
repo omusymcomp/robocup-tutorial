@@ -24,6 +24,7 @@ make install
 cd ${HAM_DIR}
 git clone git@github.com:omusymcomp/omuHam.git
 cd omuHam
+git checkout develop
 chmod 744 tensorflow_c++_install.sh
 # ubuntu22だとpythonコマンドがデフォルトでないので必須
 sudo apt install python-is-python3
