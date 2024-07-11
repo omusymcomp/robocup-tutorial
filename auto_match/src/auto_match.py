@@ -33,7 +33,7 @@ def main():
 class AutoMatch:
     def __init__(self, args):
         now = datetime.now()
-        self.formatted_date_time = now.strftime("%Y_%m%d_%H%M_%S")
+        self.formatted_date_time = now.strftime("%Y%m%d%H%M%S")
         self.log_dir = args.base_dir + "/log_analysis/log/" + self.formatted_date_time
         self.team_binary_dir = args.base_dir + "/teams"
         self.left_team_path_list = []
@@ -118,19 +118,35 @@ class AutoMatch:
                                                                         #f"server::fixed_teamname_l = {args.fixed_teamname_l} " \
                                                                         #f"server::fixed_teamname_r = {args.fixed_teamname_r} " \
                                                                             
-                self.run_command(f"{execute_command}")
-                self.output_log(counter)
+                    self.run_command(f"{execute_command}")
+                    self.output_log(counter, left_team_path, right_team_path)
 
-    def output_log(self, counter):
+    def output_log(self, counter, left_team_path, right_team_path):
         # pythonでは$HOMEをそのまま認識でないので、/home/ユーザ名 に置換
         log_dir = self.change_home_path(self.log_dir)
+        left_team_name, right_team_name = self.get_team_name(left_team_path, right_team_path)
 
         # ファイル端末出力の内容を書き込む
-        with open(f"{log_dir}/{self.formatted_date_time}_match{counter}.log", "w") as log_file:
+        with open(f"{log_dir}/{self.formatted_date_time}_{left_team_name}_vs_{right_team_name}_match{counter}.log", "w") as log_file:
             log_file.write(self.output_text)
 
     def change_home_path(self, target):
         return target.replace("$HOME", f"/home/{getpass.getuser()}") if "$HOME" in target else target
+    
+    def get_team_name(self, left_team_path, right_team_path):
+        # HELIOS、HAM、HELIOS-Baseはチーム名が１つずれる
+        if left_team_path.split( "/" )[-2] == "src":
+            left_team_name = left_team_path.split( "/" )[-3]
+        else:
+            left_team_name = left_team_path.split( "/" )[-2]
+
+        if right_team_path.split( "/" )[-2] == "src":
+            right_team_name = right_team_path.split( "/" )[-3]
+        else:
+            right_team_name = right_team_path.split( "/" )[-2]
+
+        return left_team_name, right_team_name
+        
 
 if __name__ == "__main__":
     main()
