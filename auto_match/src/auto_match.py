@@ -16,10 +16,10 @@ def main():
     parser.add_argument("-r", "--right_team_name", dest="right_team_name", default="cyrus2022", 
                         choices=["HELIOS", "HELIOS-Base", "yushan2022", "cyrus2022", 
                                  "helios2022", "fra-united2022", "alice2022"], help="右側のチーム名を指定")
-    parser.add_argument("-ln", "--visible_left_team_name", dest="visible_left_team_name", default=None, 
-                        help="表記上の左側のチームの名前を指定する。デフォルトだと登録されている名前をそのまま利用する")
-    parser.add_argument("-rn", "--visible_right_team_name", dest="visible_right_team_name", default=None, 
-                        help="表記上の右側のチームの名前を指定する。デフォルトだと登録されている名前をそのまま利用する")
+    #parser.add_argument("-fl", "--fixed_teamname_l", dest="fixed_teamname_l", default="", 
+    #                    help="表記上の左側のチームの名前を指定する。デフォルトだと登録されている名前をそのまま利用する")
+    #parser.add_argument("-fr", "--fixed_teamname_r", dest="fixed_teamname_r", default="", 
+    #                    help="表記上の右側のチームの名前を指定する。デフォルトだと登録されている名前をそのまま利用する")
     parser.add_argument("-n", "--match_number", dest="match_number", default=3, type=int, 
                         help="試合を行う回数を指定する")
     parser.add_argument("--is_synch_mode", action="store_true", dest="is_synch_mode", help="synch_modeで実行する場合に指定する")
@@ -36,15 +36,9 @@ class AutoMatch:
         self.formatted_date_time = now.strftime("%Y_%m%d_%H%M_%S")
         self.log_dir = args.base_dir + "/log_analysis/log/" + self.formatted_date_time
         self.team_binary_dir = args.base_dir + "/teams"
-        self.left_team_dir = f"{self.team_binary_dir}/{args.left_team_name}/start.sh" if self.is_binary_team(args.left_team_name) \
-                                                                                      else f"{args.base_dir}/{args.left_team_name}/{args.left_team_name.lower()}/src/start.sh" 
-        self.right_team_dir = f"{self.team_binary_dir}/{args.right_team_name}/start.sh" if self.is_binary_team(args.right_team_name) \
-                                                                                      else f"{args.base_dir}/{args.right_team_name}/{args.right_team_name.lower()}/src/start.sh"
         
-        left_team_path = self.get_team_path(args.base_dir, args.left_team_name)
-        right_team_path = self.get_team_path(args.base_dir, args.right_team_name)
-        self.left_start_command = self.add_teamname_option(left_team_path, args.visible_left_team_name)
-        self.right_start_command = self.add_teamname_option(right_team_path, args.visible_right_team_name)
+        self.left_team_path = self.get_team_path(args.base_dir, args.left_team_name)
+        self.right_team_path = self.get_team_path(args.base_dir, args.right_team_name)
 
         self.output_text = None
 
@@ -61,7 +55,9 @@ class AutoMatch:
             return False
         else:
             return True
-        
+    
+    # エラー発生したため現在未使用
+    # start.shまでのパスに-tオプションを必要なときに自動で追加する
     def add_teamname_option(self, team_path, visible_team_name):
         if visible_team_name is None:
             return team_path
@@ -87,16 +83,21 @@ class AutoMatch:
 
     def execute_matches(self, args):
         for counter in range(args.match_number):
+            # fixed_teamnameは指定しないと実行エラー吐くのでコメントアウト
+            # 使う場合は必ずargparseのオプションのコメントアウトも解除すること
             execute_command = f"{args.base_dir}/tools/bin/rcssserver server::auto_mode = 1 " \
                                                                    f"server::synch_mode = {args.is_synch_mode} " \
-                                                                   f"server::team_l_start = {self.left_team_dir} server::team_r_start = {self.right_team_dir} " \
+                                                                   f"server::team_l_start = {self.left_team_path} " \
+                                                                   f"server::team_r_start = {self.right_team_path} " \
                                                                    f"server::kick_off_wait = 50 " \
 				                                                   f"server::half_time = 300 " \
 				                                                   f"server::nr_normal_halfs = 2 server::nr_extra_halfs = 0 " \
                                                                    f"server::penalty_shoot_outs = 0 " \
                                                                    f"server::game_logging = 1 server::text_logging = 1 " \
                                                                    f"server::game_log_dir = {self.log_dir} server::text_log_dir = {self.log_dir} "
-
+                                                                   #f"server::fixed_teamname_l = {args.fixed_teamname_l} " \
+                                                                   #f"server::fixed_teamname_r = {args.fixed_teamname_r} " \
+                                                                   
             self.run_command(f"{execute_command}")
             self.output_log(counter)
 
