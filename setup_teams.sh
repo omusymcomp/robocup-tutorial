@@ -25,11 +25,11 @@ cd ${HAM_DIR}
 git clone git@github.com:omusymcomp/omuHam.git
 cd omuHam
 git checkout develop
-#chmod 744 tensorflow_c++_install.sh
+chmod 744 tensorflow_c++_install.sh
 # ubuntu22だとpythonコマンドがデフォルトでないので必須
-#sudo apt install python-is-python3
+sudo apt install python-is-python3
 # 高負荷が長時間かかるため要注意
-#./tensorflow_c++_install.sh
+./tensorflow_c++_install.sh
 ./bootstrap
 ./configure --with-librcsc=${HAM_DIR}
 make
