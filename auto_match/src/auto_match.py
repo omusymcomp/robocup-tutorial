@@ -36,15 +36,19 @@ class AutoMatch:
         self.formatted_date_time = now.strftime("%Y_%m%d_%H%M_%S")
         self.log_dir = args.base_dir + "/log_analysis/log/" + self.formatted_date_time
         self.team_binary_dir = args.base_dir + "/teams"
+        self.left_team_path_list = []
+        self.right_team_path_list = []
+        self.output_text = None
         
         if args.left_team_name == "custom":
             self.left_team_path_list = self.get_custom_team_path_list()
         else:
-            self.left_team_path = self.get_team_path(args.base_dir, args.left_team_name)
+            self.left_team_path_list.append(self.get_team_path(args.base_dir, args.left_team_name))
 
-        self.right_team_path = self.get_team_path(args.base_dir, args.right_team_name)
-
-        self.output_text = None
+        if args.right_team_name ==" custom":
+            self.right_team_path_list = self.get_custom_team_path_list()
+        else:
+            self.right_team_path_list.append(self.get_team_path(args.base_dir, args.right_team_name))
 
     def get_custom_team_path_list(self):
         custom_dir = self.change_home_path(f"{self.team_binary_dir}/custom")
@@ -97,22 +101,23 @@ class AutoMatch:
 
     def execute_matches(self, args):
         for left_team_path in self.left_team_path_list:
-            for counter in range(args.match_number):
-                # fixed_teamnameは指定しないと実行エラー吐くのでコメントアウト
-                # 使う場合は必ずargparseのオプションのコメントアウトも解除すること
-                execute_command = f"{args.base_dir}/tools/bin/rcssserver server::auto_mode = 1 " \
-                                                                    f"server::synch_mode = {args.is_synch_mode} " \
-                                                                    f"server::team_l_start = {left_team_path} " \
-                                                                    f"server::team_r_start = {self.right_team_path} " \
-                                                                    f"server::kick_off_wait = 50 " \
-                                                                    f"server::half_time = 300 " \
-                                                                    f"server::nr_normal_halfs = 2 server::nr_extra_halfs = 0 " \
-                                                                    f"server::penalty_shoot_outs = 0 " \
-                                                                    f"server::game_logging = 1 server::text_logging = 1 " \
-                                                                    f"server::game_log_dir = {self.log_dir} server::text_log_dir = {self.log_dir} "
-                                                                    #f"server::fixed_teamname_l = {args.fixed_teamname_l} " \
-                                                                    #f"server::fixed_teamname_r = {args.fixed_teamname_r} " \
-                                                                    
+            for right_team_path in self.right_team_path_list:
+                for counter in range(args.match_number):
+                    # fixed_teamnameは指定しないと実行エラー吐くのでコメントアウト
+                    # 使う場合は必ずargparseのオプションのコメントアウトも解除すること
+                    execute_command = f"{args.base_dir}/tools/bin/rcssserver server::auto_mode = 1 " \
+                                                                        f"server::synch_mode = {args.is_synch_mode} " \
+                                                                        f"server::team_l_start = {left_team_path} " \
+                                                                        f"server::team_r_start = {right_team_path} " \
+                                                                        f"server::kick_off_wait = 50 " \
+                                                                        f"server::half_time = 300 " \
+                                                                        f"server::nr_normal_halfs = 2 server::nr_extra_halfs = 0 " \
+                                                                        f"server::penalty_shoot_outs = 0 " \
+                                                                        f"server::game_logging = 1 server::text_logging = 1 " \
+                                                                        f"server::game_log_dir = {self.log_dir} server::text_log_dir = {self.log_dir} "
+                                                                        #f"server::fixed_teamname_l = {args.fixed_teamname_l} " \
+                                                                        #f"server::fixed_teamname_r = {args.fixed_teamname_r} " \
+                                                                        
             self.run_command(f"{execute_command}")
             self.output_log(counter)
 
