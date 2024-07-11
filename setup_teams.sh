@@ -38,20 +38,20 @@ make
 
 
 # librcscのコンパイル(HELIOS用)
-#cd ${HELIOS_DIR}
-#git clone git@github.com:helios-base/librcsc.git
-#cd librcsc
-#git checkout develop
-#./bootstrap
-#./configure --prefix=${HELIOS_DIR}
-#make
-#make install
-#
-## HELIOSのコンパイル
-#cd ${HELIOS_DIR}
-#git clone git@github.com:helios-base/helios.git
-#cd helios
-#git checkout develop
-#./bootstrap
-#./configure --prefix=${HELIOS_DIR} --with-librcsc=${HELIOS_DIR}
-#make
+cd ${HELIOS_DIR}
+git clone git@github.com:helios-base/librcsc.git
+cd librcsc
+git checkout develop
+./bootstrap
+./configure --prefix=${HELIOS_DIR}
+make
+make install
+
+# HELIOSのコンパイル
+cd ${HELIOS_DIR}
+git clone git@github.com:helios-base/helios.git
+cd helios
+git checkout develop
+./bootstrap
+./configure --prefix=${HELIOS_DIR} --with-librcsc=${HELIOS_DIR}
+make
