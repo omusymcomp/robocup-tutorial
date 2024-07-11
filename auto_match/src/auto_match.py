@@ -54,6 +54,7 @@ class AutoMatch:
             print(f"実行が正常に終了しました: {command}\n\n")
         except subprocess.CalledProcessError as e:
             # コマンドがエラーを返した場合
+            # TODO：エラー発生時はstderrをテキスト出力する
             print(e.stderr)
             print(f"コマンドにエラーが発生しました: {command}\n\n")
         except Exception as e:
@@ -78,8 +79,11 @@ class AutoMatch:
             self.output_log(counter)
 
     def output_log(self, counter):
+        # pythonでは$HOMEをそのまま認識でないので、/home/ユーザ名 に置換
+        log_dir = self.log_dir.replace("$HOME", f"/home/{getpass.getuser()}") if "$HOME" in self.log_dir else self.log_dir
+
         # ファイル端末出力の内容を書き込む
-        with open(f"/home/{getpass.getuser()}/rcss/log_analysis/log/{self.formatted_date_time}/{self.formatted_date_time}_match{counter}.log", "w") as log_file:
+        with open(f"{log_dir}/{self.formatted_date_time}_match{counter}.log", "w") as log_file:
             log_file.write(self.output_text)
 
 
