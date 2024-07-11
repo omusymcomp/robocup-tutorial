@@ -3,6 +3,7 @@ import argparse
 import sys
 import os
 from datetime import datetime
+import getpass
 
 
 def main():
@@ -34,6 +35,7 @@ class AutoMatch:
                                                                                       else f"{args.base_dir}/{args.left_team_name}/{args.left_team_name.lower()}/src/start.sh" 
         self.right_team_dir = f"{self.team_binary_dir}/{args.right_team_name}/start.sh" if self.is_binary_team(args.right_team_name) \
                                                                                       else f"{args.base_dir}/{args.right_team_name}/{args.right_team_name.lower()}/src/start.sh"
+        self.output_text = None
 
     def is_binary_team(self, team_name):
         # バイナリだけのチームなのか、ソースコードもあるチームなのかを判定する
@@ -47,8 +49,8 @@ class AutoMatch:
         try:
             # shell=TrueはOSコマンドインジェクションの恐れがあるので要注意
             # 現状は各個人で使うので問題ないはず
-            result = subprocess.run(command, check=True, text=True, shell=True)
-            print(result.stdout)
+            self.output_text = subprocess.run(command, check=True, text=True, shell=True, stdout=subprocess.PIPE).stdout
+            print(self.output_text)
             print(f"実行が正常に終了しました: {command}\n\n")
         except subprocess.CalledProcessError as e:
             # コマンドがエラーを返した場合
@@ -70,10 +72,15 @@ class AutoMatch:
 				                                                   f"server::nr_normal_halfs = 2 server::nr_extra_halfs = 0 " \
                                                                    f"server::penalty_shoot_outs = 0 " \
                                                                    f"server::game_logging = 1 server::text_logging = 1 " \
-                                                                   f"server::game_log_dir = {self.log_dir} server::text_log_dir = {self.log_dir} " \
-                                                                   f"2>&1 | tee {self.log_dir}/{self.formatted_date_time}_match{counter}.log"
+                                                                   f"server::game_log_dir = {self.log_dir} server::text_log_dir = {self.log_dir} "
 
             self.run_command(f"{execute_command}")
+            self.output_log(counter)
+
+    def output_log(self, counter):
+        # ファイル端末出力の内容を書き込む
+        with open(f"/home/{getpass.getuser()}/rcss/log_analysis/log/{self.formatted_date_time}/{self.formatted_date_time}_match{counter}.log", "w") as log_file:
+            log_file.write(self.output_text)
 
 
 if __name__ == "__main__":
