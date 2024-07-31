@@ -16,8 +16,8 @@ Team_L="${BASEDIR}/$1/bin/start.sh"
 Team_R="${BASEDIR}/$2/bin/start.sh"
 count=1
 
-# 各試合回数はこのスクリプト実行時の1つ目の引数で指定
-while [ $count -le $3 ] ; do	#-leは<=の意味
+# 各試合回数はこのスクリプト実行時の3つ目の引数で指定
+while [ $count -le $0 ] ; do	#-leは<=の意味
 	echo "--------------------"
 	echo " ${Team_L} vs ${Team_R}"
 	echo " Game ${count}"
@@ -25,12 +25,14 @@ while [ $count -le $3 ] ; do	#-leは<=の意味
 	count=$(($count+1))
 	DATE=`date +%Y%m%d%0k%M`
 	mode=true
+	#  シンクモードをtrueにするかどうか
+	synch=true
 	#　ログを圧縮するかどうか 0 -> 圧縮, 1 -> 圧縮しない
 	COMPRESS=0
 
 	# 試合を実行するチームがすべてsynch_modeに対応していることが前提
 	rcssserver server::auto_mode = ${mode} \
-				server::synch_mode = ${mode} \
+				server::synch_mode = ${synch} \
 				server::team_l_start = ${Team_L} server::team_r_start = ${Team_R} \
 				server::kick_off_wait = 50 \
 				server::half_time = 300 \
