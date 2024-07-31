@@ -4,7 +4,17 @@
 #第2引数 右側のチーム
 #第3引数 試合数
 
-BASEDIR=${HOME}/rcss/teams/robocup2024
+cd `dirname $0`
+
+TEAM_PATH_FILE="team_paths.conf"
+
+BASEDIR="${HOME}/rcss/teams"
+
+# 設定ファイルの読み込み
+if [ ! -f "$CONFIG_FILE" ]; then
+  echo "Error: Configuration file $CONFIG_FILE does not exist."
+  exit 1
+fi
 
 #日付のファイルを指定場所に作る
 DATE=`date +%Y%m%d%0k%M`
@@ -12,9 +22,43 @@ LOGDIR="${HOME}/rcss/log_analysis/log/${DATE}"
 mkdir -p ${LOGDIR}
 
 # すべてのチームバイナリが「start.sh」で動くことが前提
-Team_L="${BASEDIR}/$1/bin/start.sh"
-Team_R="${BASEDIR}/$2/bin/start.sh"
+Team_L=$1
+Team_R=$2
 count=1
+
+
+# チームのスクリプトパスを取得する関数
+get_team_script_path() {
+  local team=$1
+  local path=$(grep "^${team}=" "$CONFIG_FILE" | cut -d'=' -f2)
+  echo "$path"
+}
+
+# 左チームのスクリプトパスを取得
+LEFT_SCRIPT=$(get_team_script_path "$Team_L")
+if [ -z "$LEFT_SCRIPT" ]; then
+  echo "Error: No script path found for team $Team_L."
+  exit 1
+fi
+
+# 右チームのスクリプトパスを取得
+RIGHT_SCRIPT=$(get_team_script_path "$Team_R")
+if [ -z "$RIGHT_SCRIPT" ]; then
+  echo "Error: No script path found for team $Team_R."
+  exit 1
+fi
+
+# 左チームのスクリプトの存在確認
+if [ ! -f "$LEFT_SCRIPT" ]; then
+  echo "Error: Script $LEFT_SCRIPT does not exist for team $Team_L."
+  exit 1
+fi
+
+# 右チームのスクリプトの存在確認
+if [ ! -f "$RIGHT_SCRIPT" ]; then
+  echo "Error: Script $RIGHT_SCRIPT does not exist for team $Team_R."
+  exit 1
+fi
 
 # 各試合回数はこのスクリプト実行時の3つ目の引数で指定
 while [ $count -le $0 ] ; do	#-leは<=の意味
@@ -33,7 +77,7 @@ while [ $count -le $0 ] ; do	#-leは<=の意味
 	# 試合を実行するチームがすべてsynch_modeに対応していることが前提
 	rcssserver server::auto_mode = ${mode} \
 				server::synch_mode = ${synch} \
-				server::team_l_start = ${Team_L} server::team_r_start = ${Team_R} \
+				server::team_l_start = ${LEFT_SCRIPT} server::team_r_start = ${RIGHT_SCRIPT} \
 				server::kick_off_wait = 50 \
 				server::half_time = 300 \
 				server::nr_normal_halfs = 2 server::nr_extra_halfs = 0 \
