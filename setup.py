@@ -51,6 +51,12 @@ def main():
     else:
         called_method = getattr(setup_tools, f"install_{args.install_target}")
         called_method()
+    
+    # 実行者のユーザー名を動的に取得してパスを構築
+    username = os.getlogin()
+    target_directory = f"/home/{username}/rcss/teams"
+
+    setup_teams.replace_username(target_directory)
 
 
 class SetupTools:
@@ -287,6 +293,27 @@ class SetupTeams:
         self.run_command(f"{self.teams_dir}/helios-base/bootstrap")
         self.run_command(f"{self.teams_dir}/helios-base/configure --with-librcsc={self.teams_dir}")
         self.run_command(f"make")
+
+    def replace_username(self, directory):
+        # 実行者のユーザー名を取得
+        username = os.getlogin()
+
+        # 指定されたディレクトリ内のすべてのファイルを処理
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                # 対象ファイルをテキストとして開く
+                file_path = os.path.join(root, file)
+                with open(file_path, 'r') as f:
+                    content = f.read()
+
+                # "username" を実行者のユーザー名に置き換える
+                updated_content = content.replace('/home/username/', f'/home/{username}/')
+
+                # ファイルの内容を上書き保存
+                with open(file_path, 'w') as f:
+                    f.write(updated_content)
+
+        print("ファイル内のパスの置換が完了しました")
 
 if __name__ == "__main__":
     main()
