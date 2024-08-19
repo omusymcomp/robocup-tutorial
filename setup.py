@@ -54,9 +54,10 @@ def main():
     
     # 実行者のユーザー名を動的に取得してパスを構築
     username = os.getlogin()
-    target_directory = f"/home/{username}/rcss/teams"
+    directory = f"/home/{username}/rcss/teams"
 
-    setup_teams.replace_username(target_directory)
+    setup_teams.replace_username(directory)
+    setup_teams.add_execution_permission(directory)
 
 
 class SetupTools:
@@ -247,7 +248,7 @@ class SetupTeams:
             # 現状は各個人で使うので問題ないはず
             result = subprocess.run(command, check=True, text=True, capture_output=True, shell=True)
             print(result.stdout)
-            print(f"実行が正常に終了しました: {command}\n\n")
+            print(f"実行が正常に終了しました: {command}\n")
         except subprocess.CalledProcessError as e:
             # コマンドエラーを返した場合
             print(e.stderr)
@@ -298,22 +299,38 @@ class SetupTeams:
         # 実行者のユーザー名を取得
         username = os.getlogin()
 
-        # 指定されたディレクトリ内のすべてのファイルを処理
+        try:
+            if not os.path.exists(directory):
+                print(f"指定されたディレクトリが存在しません: {directory}")
+            # 指定されたディレクトリ内のすべてのファイルを処理
+            for root, dirs, files in os.walk(directory):
+                for file in files:
+                    # 対象ファイルをテキストとして開く
+                    file_path = os.path.join(root, file)
+                    with open(file_path, 'r') as f:
+                        content = f.read()
+
+                    # "username" を実行者のユーザー名に置き換える
+                    updated_content = content.replace('/home/username/', f'/home/{username}/')
+
+                    # ファイルの内容を上書き保存
+                    with open(file_path, 'w') as f:
+                        f.write(updated_content)
+
+            print("ファイル内のパスの置換が完了しました")            
+        
+        except Exception as e:
+          # その他の例外
+            print(e.stderr)
+            print(f"想定していないエラーが発生しました")  
+
+    def add_execution_permission(self, directory):
         for root, dirs, files in os.walk(directory):
             for file in files:
-                # 対象ファイルをテキストとして開く
-                file_path = os.path.join(root, file)
-                with open(file_path, 'r') as f:
-                    content = f.read()
-
-                # "username" を実行者のユーザー名に置き換える
-                updated_content = content.replace('/home/username/', f'/home/{username}/')
-
-                # ファイルの内容を上書き保存
-                with open(file_path, 'w') as f:
-                    f.write(updated_content)
-
-        print("ファイル内のパスの置換が完了しました")
+                # スクリプトファイルの拡張子や特定のファイル名に基づいて実行権限を付与
+                if file.endswith('.sh') or 'start' in file:
+                    file_path = os.path.join(root, file)
+                    self.run_command(f"chmod +x {file_path}")
 
 if __name__ == "__main__":
     main()
