@@ -35,8 +35,10 @@ def main():
         setup_tools.install_soccerwindow2()
         setup_tools.install_rcssmonitor()
         setup_tools.install_fedit2()
-        setup_teams.install_teams()
         setup_teams.install_helios_base()
+        setup_teams.install_teams()
+        setup_teams.replace_username()
+        setup_teams.add_execution_permission
     elif args.install_target == "minisetup":
         setup_tools.install_librcsc()
         setup_tools.install_rcssserver()
@@ -51,14 +53,6 @@ def main():
     else:
         called_method = getattr(setup_tools, f"install_{args.install_target}")
         called_method()
-    
-    # 実行者のユーザー名を動的に取得してパスを構築
-    username = os.getlogin()
-    directory = f"/home/{username}/rcss/teams"
-
-    setup_teams.replace_username(directory)
-    setup_teams.add_execution_permission(directory)
-
 
 class SetupTools:
     def __init__(self, args):
@@ -206,7 +200,7 @@ class SetupTools:
         self.run_command(f"{self.tools_dir}/fedit2/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
         self.run_command(f"make")
         self.run_command(f"make install")
-
+    
     # def install_helios_base(self):
     #     self.run_command(f"mkdir -p {self.teams_dir}")
     #     # HELIOS-Base用のlibrcscのコンパイル
@@ -239,8 +233,11 @@ class SetupTools:
 
 class SetupTeams:
     def __init__(self, args):
+        # 実行者のユーザー名を動的に取得してパスを構築
+        username = os.getlogin()
         self.base_dir = args.base_dir
         self.teams_dir = self.base_dir + "/teams"
+        self.user_teams_dir = f"/home/{username}/rcss/teams"
 
     def run_command(self, command):
         try:
@@ -295,10 +292,10 @@ class SetupTeams:
         self.run_command(f"{self.teams_dir}/helios-base/configure --with-librcsc={self.teams_dir}")
         self.run_command(f"make")
 
-    def replace_username(self, directory):
+    def replace_username(self):
         # 実行者のユーザー名を取得
         username = os.getlogin()
-
+        directory = self.user_teams_dir
         try:
             if not os.path.exists(directory):
                 print(f"指定されたディレクトリが存在しません: {directory}")
@@ -316,15 +313,14 @@ class SetupTeams:
                     # ファイルの内容を上書き保存
                     with open(file_path, 'w') as f:
                         f.write(updated_content)
-
-            print("ファイル内のパスの置換が完了しました")            
-        
+            print("ファイル内のパスの置換が完了しました")                   
         except Exception as e:
           # その他の例外
             print(e.stderr)
             print(f"想定していないエラーが発生しました")  
 
-    def add_execution_permission(self, directory):
+    def add_execution_permission(self):
+        directory = self.user_teams_dir
         for root, dirs, files in os.walk(directory):
             for file in files:
                 # スクリプトファイルの拡張子や特定のファイル名に基づいて実行権限を付与
