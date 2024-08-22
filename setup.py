@@ -39,7 +39,7 @@ def main():
         setup_teams.install_helios_base()
         setup_teams.install_teams()
         setup_teams.replace_username()
-        setup_teams.add_execution_permission
+        setup_teams.add_execution_permission()
     elif args.install_target == "minisetup":
         setup_tools.install_librcsc()
         setup_tools.install_rcssserver()
