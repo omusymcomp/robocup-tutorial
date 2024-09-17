@@ -9,7 +9,7 @@ def main():
     parser.add_argument("-d", "--base_dir", dest="base_dir", default=os.path.expandvars("$HOME/rcss"), help="環境構築をするベースディレクトリを指定")
     parser.add_argument("-t", "--install_target", dest="install_target", default="minisetup", 
                         choices=["all", "minisetup", "tools", "librcsc", "rcssserver", "soccerwindow2", 
-                                 "rcssmonitor", "fedit2", "helios_base", "helios"], 
+                                 "rcssmonitor", "fedit2", "helios_base", "helios", "loganalyzer3"], 
                         help="インストールする対象を指定する。allはすべて、minisetupは実行に必要な最小構成、それ以外の場合は指定した名前のツール・チームをインストールする")
     parser.add_argument("--upgrade_packages", action="store_true", dest="upgrade_packages", help="コンパイル実行前にパッケージアップデートをする場合は指定する")
     parser.add_argument("--is_installation_of_essential_packages", action="store_true", dest="is_installation_of_essential_packages", 
@@ -35,7 +35,7 @@ def main():
         setup_tools.install_soccerwindow2()
         setup_tools.install_rcssmonitor()
         setup_tools.install_fedit2()
-        setup_tools.install_parameter_search()
+        setup_tools.install_loganalyzer3()
         setup_teams.install_helios_base()
         setup_teams.install_teams()
         setup_teams.replace_username()
@@ -51,7 +51,7 @@ def main():
         setup_tools.install_soccerwindow2()
         setup_tools.install_rcssmonitor()
         setup_tools.install_fedit2()
-        setup_tools.install_parameter_search()
+        setup_tools.install_loganalyzer3()
     else:
         called_method = getattr(setup_tools, f"install_{args.install_target}")
         called_method()
@@ -173,14 +173,19 @@ class SetupTools:
         self.run_command(f"make")
         self.run_command(f"make install")
     
-    def install_parameter_search(self):
-        # parameter_searchのコンパイル
+    def install_loganalyzer3(self):
+        # loganalyzer3のコンパイル
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
-        if not os.path.exists(self.tools_dir+"/parameter_search"):
-            self.run_command("git clone -b parameter_search git@github.com:omusymcomp/cmaes-robocup.git parameter_search")
+        if not os.path.exists(self.tools_dir+"/loganalyzer3"):
+            self.run_command("git clone -b develop git@github.com:opusymcomp/loganalyzer3.git")
         else:
-            print(f"{self.tools_dir}"+"/parameter_search が存在するため、git cloneをスキップします")
+            print(f"{self.tools_dir}"+"/loganalyzer3 が存在するため、git cloneをスキップします")
+        os.chdir(f"./loganalyzer3")
+        self.run_command(f"{self.tools_dir}/loganalyzer3/bootstrap")
+        self.run_command(f"{self.tools_dir}/loganalyzer3/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
+        self.run_command(f"make")
+        self.run_command(f"make install")
 
 class SetupTeams:
     def __init__(self, args):
