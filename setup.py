@@ -177,11 +177,6 @@ class SetupTools:
             self.run_command("git clone git@github.com:opusymcomp/loganalyzer3.git")
         else:
             print(f"{self.tools_dir}"+"/loganalyzer3 が存在するため、git cloneをスキップします")
-        os.chdir(f"./loganalyzer3")
-        self.run_command(f"{self.tools_dir}/loganalyzer3/bootstrap")
-        self.run_command(f"{self.tools_dir}/loganalyzer3/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
-        self.run_command(f"make")
-        self.run_command(f"make install")
 
 class SetupTeams:
     def __init__(self, args):
