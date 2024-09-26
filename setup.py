@@ -249,11 +249,19 @@ class SetupTeams:
         try:
             if not os.path.exists(directory):
                 print(f"指定されたディレクトリが存在しません: {directory}")
+                return
+
             # 指定されたディレクトリ内のすべてのファイルを処理
             for root, dirs, files in os.walk(directory):
+                # .git ディレクトリをスキップ
+                if '.git' in dirs:
+                    dirs.remove('.git')
+
                 for file in files:
                     # 対象ファイルをテキストとして開く
                     file_path = os.path.join(root, file)
+                    
+                    # ファイルの内容を読み込む
                     with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                         content = f.read()
 
@@ -263,10 +271,13 @@ class SetupTeams:
                     # ファイルの内容を上書き保存
                     with open(file_path, 'w') as f:
                         f.write(updated_content)
-            print("ファイル内のパスの置換が完了しました")                   
+
+            print("ファイル内のパスの置換が完了しました")
+        
         except Exception as e:
-          # その他の例外
-            print(f"想定していないエラーが発生しました")  
+            # その他の例外
+            print(str(e))
+            print("想定していないエラーが発生しました") 
 
     def add_execution_permission(self):
         directory = self.user_teams_dir
