@@ -194,6 +194,7 @@ class SetupTeams:
         self.base_dir = args.base_dir
         self.teams_dir = self.base_dir + "/teams"
         self.user_teams_dir = f"/home/{username}/rcss/teams"
+        self.configure_dir = self.base_dir + "/teams"
 
     def run_command(self, command):
         try:
