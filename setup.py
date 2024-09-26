@@ -36,6 +36,7 @@ def main():
         setup_tools.install_rcssmonitor()
         setup_tools.install_fedit2()
         setup_tools.install_loganalyzer3()
+        setup_teams.install_librcsc_for_helios_base()
         setup_teams.install_helios_base()
         setup_teams.install_teams()
         setup_teams.replace_username()
@@ -44,6 +45,7 @@ def main():
         setup_tools.install_librcsc()
         setup_tools.install_rcssserver()
         setup_tools.install_soccerwindow2()
+        setup_tools.install_librcsc_for_helios_base()
         setup_teams.install_helios_base()
     elif args.install_target == "tools":
         setup_tools.install_librcsc()
@@ -111,7 +113,6 @@ class SetupTools:
         else:
             print(f"{self.tools_dir}"+"/librcsc が存在するため、git cloneをスキップします")
         os.chdir(f"./librcsc")
-        self.run_command(f"git checkout 348f41e")
         self.run_command(f"{self.tools_dir}/librcsc/bootstrap")
         self.run_command(f"{self.tools_dir}/librcsc/configure --prefix={self.configure_dir}")
         self.run_command(f"make")
@@ -219,7 +220,7 @@ class SetupTeams:
         else:
             print(f"{self.teams_dir}"+"/rc2023 が存在するため、git clone をスキップします")   
 
-    def install_librcsc(self):
+    def install_librcsc_for_helios_base(self):
         # librcscのコンパイル
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
@@ -237,7 +238,7 @@ class SetupTeams:
     def install_helios_base(self):
         self.run_command(f"mkdir -p {self.teams_dir}")
         # HELIOS-Base用のlibrcscのコンパイル
-        self.install_librcsc()
+        self.install_librcsc_for_helios_base()
         # HELIOS-Baseのコンパイル
         os.chdir(f"{self.teams_dir}")
         if not os.path.exists(self.teams_dir+"/helios-base"):
