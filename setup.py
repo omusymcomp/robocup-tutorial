@@ -259,7 +259,7 @@ class SetupTeams:
                 for file in files:
                     # 対象ファイルをテキストとして開く
                     file_path = os.path.join(root, file)
-                    with open(file_path, 'r') as f:
+                    with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                         content = f.read()
 
                     # "username" を実行者のユーザー名に置き換える
@@ -271,7 +271,6 @@ class SetupTeams:
             print("ファイル内のパスの置換が完了しました")                   
         except Exception as e:
           # その他の例外
-            print(e.stderr)
             print(f"想定していないエラーが発生しました")  
 
     def add_execution_permission(self):
