@@ -174,7 +174,7 @@ class SetupTools:
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/loganalyzer3"):
-            self.run_command("git clone -b develop git@github.com:opusymcomp/loganalyzer3.git")
+            self.run_command("git clone git@github.com:opusymcomp/loganalyzer3.git")
         else:
             print(f"{self.tools_dir}"+"/loganalyzer3 が存在するため、git cloneをスキップします")
         os.chdir(f"./loganalyzer3")
