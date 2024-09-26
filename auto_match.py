@@ -10,10 +10,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--base_dir", dest="base_dir", default=os.path.expandvars("$HOME/rcss"), 
                         help="環境構築されているベースディレクトリを指定")
-    parser.add_argument("-l", "--left_team_name", dest="left_team_name", default="helios2022", 
-                        choices=["custom", "HELIOS", "HELIOS-Base", "yushan2022", "cyrus2022", 
-                                 "helios2022", "fra-united2022", "alice2022"], help="左側のチーム名を指定")
-    parser.add_argument("-r", "--right_team_name", dest="right_team_name", default="cyrus2022", 
+    parser.add_argument("-l", "--left_team_name", dest="left_team_name", default="helios-base", 
+                        choices=["custom", "HELIOS2023", "RoboCIn", "CYRUS", 
+                                 "FRA-UNIted", "yushan2023"], help="左側のチーム名を指定")
+    parser.add_argument("-r", "--right_team_name", dest="right_team_name", default="HELIOS2023", 
                         choices=["custom", "HELIOS", "HELIOS-Base", "yushan2022", "cyrus2022",
                                  "helios2022", "fra-united2022", "alice2022"], help="右側のチーム名を指定")
     #parser.add_argument("-fl", "--fixed_teamname_l", dest="fixed_teamname_l", default="", 
