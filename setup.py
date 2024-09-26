@@ -36,8 +36,8 @@ def main():
         setup_tools.install_rcssmonitor()
         setup_tools.install_fedit2()
         setup_tools.install_loganalyzer3()
-        setup_teams.install_helios_base()
         setup_teams.install_teams()
+        setup_teams.install_helios_base()
         setup_teams.replace_username()
         setup_teams.add_execution_permission()
     elif args.install_target == "minisetup":
@@ -61,7 +61,6 @@ class SetupTools:
         self.base_dir = args.base_dir
         self.tools_dir = self.base_dir + "/tools"
         self.configure_dir = self.base_dir + "/tools"
-        self.teams_dir = self.base_dir + "/teams"
 
     def run_command(self, command):
         try:
@@ -211,11 +210,12 @@ class SetupTeams:
             print(f"想定していないエラーが発生しました: {command}\n\n")    
 
     def install_teams(self):
-        os.chdir(f"{self.base_dir_dir}")
-        if not os.path.exists(f"{self.teams_dir}"+"/rc2023"):
+        self.run_command(f"mkdir -p {self.base_dir}")
+        os.chdir(f"{self. base_dir}")
+        if not os.path.exists(f"{self.teams_dir}"):
             self.run_command("git clone git@github.com:omusymcomp/robocup_teams.git teams")
         else:
-            print(f"{self.teams_dir}"+"/rc2023 が存在するため、git clone をスキップします")   
+            print(f"{self.teams_dir}"+"が存在するため、git clone をスキップします")   
 
     def install_librcsc_for_helios_base(self):
         # librcscのコンパイル
