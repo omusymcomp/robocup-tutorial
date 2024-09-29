@@ -101,6 +101,32 @@ After installation, you can start the RoboCup 2D server with the following comma
 rcssserver
 ```
 
+## Directory tree
+<pre>
+$HOME
+└  rcss
+        ├ tools
+        │       ├ librcsc
+        │       ├ rcssserver 
+        │       ├ rcssmonitor
+        │       ├ soccerwindow2
+        │       ├ loganalyzer3
+        │       └ fedit
+        │
+        └  teams  
+                  ├ rc2023 
+                  │       ├ HELIOS2023
+                  │       ├ ...
+                  │       └ ...
+                  ├ rc2024
+                  │       ├ HELIOS2024
+                  │       ├ ...
+                  │       └ ...
+                  └ base_team
+                            ├ librcsc (for helios-base)
+                            └  helios-base
+</pre>
+
 ## Start a match
 
 To start a match between the installed teams, uset the following command:
