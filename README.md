@@ -148,7 +148,7 @@ export TEAM_DIR=~/robocup/teams
 export MATCH_LOG_DIR=~/robocup/logs
 ```
 
-## Tools
+## Libraries and helios-base
 
 - **[librcsc](https://github.com/helios-base/librcsc)**
 - **[rcssserver](https://github.com/rcsoccersim/rcssserver)**
@@ -156,6 +156,8 @@ export MATCH_LOG_DIR=~/robocup/logs
 - **[soccerwindow2](https://github.com/helios-base/soccerwindow2)**
 - **[loganalyzer3](https://github.com/opusymcomp/loganalyzer3)**
 - **[fedit2](https://github.com/helios-base/fedit2)**
+- **[helios-base](https://github.com/helios-base/helios-base)**
+
 
 ## References
 
