@@ -191,6 +191,9 @@ class SetupTeams:
         self.user_teams_dir = f"/home/{username}/rcss/teams"
         self.base_team_dir = self.base_dir + "/teams/base_team"
         self.configure_dir = self.base_dir + "/teams/base_team"
+        self.make_command = "make"
+        if self.jobs:
+            self.make_command += f" -j {self.jobs}"
 
     def run_command(self, command):
         try:
