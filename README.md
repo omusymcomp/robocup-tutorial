@@ -124,7 +124,7 @@ $HOME
            │      └ ...
            └ base_team
                   ├ librcsc (for helios-base)
-                  └  helios-base
+                  └ helios-base
 </pre>
 
 ## Start a match
