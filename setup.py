@@ -62,6 +62,7 @@ class SetupTools:
         self.base_dir = args.base_dir
         self.tools_dir = self.base_dir + "/tools"
         self.configure_dir = self.base_dir + "/tools"
+        self.jobs = args.jobs
         self.make_command = "make"
         if self.jobs:
             self.make_command += f" -j {self.jobs}"
@@ -191,6 +192,7 @@ class SetupTeams:
         self.user_teams_dir = f"/home/{username}/rcss/teams"
         self.base_team_dir = self.base_dir + "/teams/base_team"
         self.configure_dir = self.base_dir + "/teams/base_team"
+        self.jobs = args.jobs
         self.make_command = "make"
         if self.jobs:
             self.make_command += f" -j {self.jobs}"
