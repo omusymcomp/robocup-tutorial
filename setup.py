@@ -11,7 +11,7 @@ def main():
                         choices=["all", "minisetup", "tools", "librcsc", "rcssserver", "soccerwindow2", 
                                  "rcssmonitor", "fedit2", "helios_base", "helios", "loganalyzer3"], 
                         help="インストールする対象を指定する。allはすべて、minisetupは実行に必要な最小構成、それ以外の場合は指定した名前のツール・チームをインストールする")
-    parser.add_argument("--j", "jobs", type=int, dest="jobs", help="コンパイル時に同時に実行するジョブ数を指定(make -j option)")
+    parser.add_argument("-j", "--jobs", type=int, dest="jobs", help="コンパイル時に同時に実行するジョブ数を指定(make -j option)")
     parser.add_argument("--upgrade_packages", action="store_true", dest="upgrade_packages", help="コンパイル実行前にパッケージアップデートをする場合は指定する")
     parser.add_argument("--is_installation_of_essential_packages", action="store_true", dest="is_installation_of_essential_packages", 
                         help="コンパイル実行前にパッケージアップデートをする場合は指定する")
