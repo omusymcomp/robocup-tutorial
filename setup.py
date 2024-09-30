@@ -11,6 +11,7 @@ def main():
                         choices=["all", "minisetup", "tools", "librcsc", "rcssserver", "soccerwindow2", 
                                  "rcssmonitor", "fedit2", "helios_base", "helios", "loganalyzer3"], 
                         help="インストールする対象を指定する。allはすべて、minisetupは実行に必要な最小構成、それ以外の場合は指定した名前のツール・チームをインストールする")
+    parser.add_argument("--j", "jobs", type=int, dest="jobs", help="コンパイル時に同時に実行するジョブ数を指定(make -j option)")
     parser.add_argument("--upgrade_packages", action="store_true", dest="upgrade_packages", help="コンパイル実行前にパッケージアップデートをする場合は指定する")
     parser.add_argument("--is_installation_of_essential_packages", action="store_true", dest="is_installation_of_essential_packages", 
                         help="コンパイル実行前にパッケージアップデートをする場合は指定する")
@@ -61,6 +62,9 @@ class SetupTools:
         self.base_dir = args.base_dir
         self.tools_dir = self.base_dir + "/tools"
         self.configure_dir = self.base_dir + "/tools"
+        self.make_command = "make"
+        if self.jobs:
+            self.make_command += f" -j {self.jobs}"
 
     def run_command(self, command):
         try:
@@ -110,7 +114,7 @@ class SetupTools:
         os.chdir(f"./librcsc")
         self.run_command(f"{self.tools_dir}/librcsc/bootstrap")
         self.run_command(f"{self.tools_dir}/librcsc/configure --prefix={self.configure_dir}")
-        self.run_command(f"make")
+        self.run_command(self.make_command)
         self.run_command(f"make install")
 
     def install_rcssserver(self):
@@ -124,7 +128,7 @@ class SetupTools:
         os.chdir(f"./rcssserver")
         self.run_command(f"{self.tools_dir}/rcssserver/bootstrap")
         self.run_command(f"{self.tools_dir}/rcssserver/configure --prefix={self.configure_dir}")
-        self.run_command(f"make")
+        self.run_command(self.make_command)
         self.run_command(f"make install")
 
     def install_soccerwindow2(self):
@@ -138,7 +142,7 @@ class SetupTools:
         os.chdir(f"./soccerwindow2")
         self.run_command(f"{self.tools_dir}/soccerwindow2/bootstrap")
         self.run_command(f"{self.tools_dir}/soccerwindow2/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
-        self.run_command(f"make")
+        self.run_command(self.make_command)
         self.run_command(f"make install")
 
     def install_rcssmonitor(self):
@@ -152,7 +156,7 @@ class SetupTools:
         os.chdir(f"./rcssmonitor")
         self.run_command(f"{self.tools_dir}/rcssmonitor/bootstrap")
         self.run_command(f"{self.tools_dir}/rcssmonitor/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
-        self.run_command(f"make")
+        self.run_command(self.make_command)
         self.run_command(f"make install")
 
     def install_fedit2(self):
@@ -166,7 +170,7 @@ class SetupTools:
         os.chdir(f"./fedit2")
         self.run_command(f"{self.tools_dir}/fedit2/bootstrap")
         self.run_command(f"{self.tools_dir}/fedit2/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
-        self.run_command(f"make")
+        self.run_command(self.make_command)
         self.run_command(f"make install")
     
     def install_loganalyzer3(self):
@@ -224,7 +228,7 @@ class SetupTeams:
         self.run_command(f"git checkout 348f41e")
         self.run_command(f"{self.configure_dir}/librcsc/bootstrap")
         self.run_command(f"{self.configure_dir}/librcsc/configure --prefix={self.configure_dir}")
-        self.run_command(f"make")
+        self.run_command(self.make_command)
         self.run_command(f"make install")  
     
     def install_helios_base(self):
@@ -240,7 +244,7 @@ class SetupTeams:
         os.chdir(f"./helios-base")
         self.run_command(f"{self.configure_dir}/helios-base/bootstrap")
         self.run_command(f"{self.configure_dir}/helios-base/configure --with-librcsc={self.configure_dir}")
-        self.run_command(f"make")
+        self.run_command(self.make_command)
 
     def replace_username(self):
         # 実行者のユーザー名を取得
