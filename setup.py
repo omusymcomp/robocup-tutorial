@@ -217,7 +217,7 @@ class SetupTeams:
         self.run_command(f"mkdir -p {self.base_dir}")
         os.chdir(f"{self. base_dir}")
         if not os.path.exists(f"{self.teams_dir}"):
-            self.run_command("git clone https://github.com/omusymcomp/robocup_teams.git")
+            self.run_command("git clone https://github.com/omusymcomp/robocup_teams.git teams")
         else:
             print(f"{self.teams_dir}"+"が存在するため、git clone をスキップします")   
 
