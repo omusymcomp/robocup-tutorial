@@ -109,7 +109,7 @@ class SetupTools:
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/librcsc"):
-            self.run_command("git clone -b develop git@github.com:helios-base/librcsc.git")
+            self.run_command("git clone -b develop https://github.com/helios-base/librcsc.git")
         else:
             print(f"{self.tools_dir}"+"/librcsc が存在するため、git cloneをスキップします")
         os.chdir(f"./librcsc")
@@ -123,7 +123,7 @@ class SetupTools:
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/rcssserver"):
-            self.run_command("git clone -b develop git@github.com:rcsoccersim/rcssserver.git")
+            self.run_command("git clone -b develop https://github.com/rcsoccersim/rcssserver.git")
         else:
             print(f"{self.tools_dir}"+"/rcssserver が存在するため、git cloneをスキップします")
         os.chdir(f"./rcssserver")
@@ -137,7 +137,7 @@ class SetupTools:
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/soccerwindow2"):
-            self.run_command("git clone -b develop git@github.com:helios-base/soccerwindow2.git")
+            self.run_command("git clone -b develop https://github.com/helios-base/soccerwindow2.git")
         else:
             print(f"{self.tools_dir}"+"/soccerwindow2 が存在するため、git cloneをスキップします")
         os.chdir(f"./soccerwindow2")
@@ -151,7 +151,7 @@ class SetupTools:
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/rcssmonitor"):
-            self.run_command("git clone -b develop git@github.com:rcsoccersim/rcssmonitor.git")
+            self.run_command("git clone -b develop https://github.com/rcsoccersim/rcssmonitor.git")
         else:
             print(f"{self.tools_dir}"+"/rcssmonitor が存在するため、git cloneをスキップします")
         os.chdir(f"./rcssmonitor")
@@ -165,7 +165,7 @@ class SetupTools:
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/fedit2"):
-            self.run_command("git clone -b develop git@github.com:helios-base/fedit2.git")
+            self.run_command("git clone -b develop https://github.com/helios-base/fedit2.git")
         else:
             print(f"{self.tools_dir}"+"/fedit2 が存在するため、git cloneをスキップします")
         os.chdir(f"./fedit2")
@@ -179,7 +179,7 @@ class SetupTools:
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/loganalyzer3"):
-            self.run_command("git clone git@github.com:opusymcomp/loganalyzer3.git")
+            self.run_command("git clone https://github.com/opusymcomp/loganalyzer3.git")
         else:
             print(f"{self.tools_dir}"+"/loganalyzer3 が存在するため、git cloneをスキップします")
 
@@ -217,7 +217,7 @@ class SetupTeams:
         self.run_command(f"mkdir -p {self.base_dir}")
         os.chdir(f"{self. base_dir}")
         if not os.path.exists(f"{self.teams_dir}"):
-            self.run_command("git clone git@github.com:omusymcomp/robocup_teams.git teams")
+            self.run_command("git clone https://github.com/omusymcomp/robocup_teams.git")
         else:
             print(f"{self.teams_dir}"+"が存在するため、git clone をスキップします")   
 
@@ -226,7 +226,7 @@ class SetupTeams:
         self.run_command(f"mkdir -p {self.base_team_dir}")
         os.chdir(f"{self.base_team_dir}")
         if not os.path.exists(self.base_team_dir+"/librcsc"):
-            self.run_command("git clone -b develop git@github.com:helios-base/librcsc.git")
+            self.run_command("git clone -b develop https://github.com/helios-base/librcsc.git")
         else:
             print(f"{self.base_team_dir}"+"/librcsc が存在するため、git cloneをスキップします")
         os.chdir(f"./librcsc")
@@ -243,7 +243,7 @@ class SetupTeams:
         # HELIOS-Baseのコンパイル
         os.chdir(f"{self.base_team_dir}")
         if not os.path.exists(self.base_team_dir+"/helios-base"):
-            self.run_command("git clone -b develop git@github.com:helios-base/helios-base.git")
+            self.run_command("git clone -b develop https://github.com/helios-base/helios-base.git")
         else:
             print(f"{self.base_team_dir}"+"/helios-base が存在するため、git cloneをスキップします")
         os.chdir(f"./helios-base")
