@@ -61,7 +61,7 @@ class SetupTools:
     def __init__(self, args):
         self.base_dir = args.base_dir
         self.tools_dir = self.base_dir + "/tools"
-        self.configure_dir = self.base_dir + "/tools"
+        self.configure_for_tools_dir = self.base_dir + "/tools"
         self.jobs = args.jobs
         self.make_command = "make"
         if self.jobs:
@@ -106,7 +106,7 @@ class SetupTools:
 
     def install_librcsc(self):
         # Compile librcsc
-        self.run_command(f"mkdir -p {self.configure_dir}")
+        self.run_command(f"mkdir -p {self.configure_for_tools_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/librcsc"):
             self.run_command("git clone -b develop https://github.com/helios-base/librcsc.git")
@@ -114,13 +114,13 @@ class SetupTools:
             print(f"{self.tools_dir}"+"/librcsc exists, skipping git clone")
         os.chdir(f"./librcsc")
         self.run_command(f"{self.tools_dir}/librcsc/bootstrap")
-        self.run_command(f"{self.tools_dir}/librcsc/configure --prefix={self.configure_dir}")
+        self.run_command(f"{self.tools_dir}/librcsc/configure --prefix={self.configure_for_tools_dir}")
         self.run_command(self.make_command)
         self.run_command(f"make install")
 
     def install_rcssserver(self):
         # Compile rcssserver
-        self.run_command(f"mkdir -p {self.configure_dir}")
+        self.run_command(f"mkdir -p {self.configure_for_tools_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/rcssserver"):
             self.run_command("git clone -b develop https://github.com/rcsoccersim/rcssserver.git")
@@ -128,13 +128,13 @@ class SetupTools:
             print(f"{self.tools_dir}"+"/rcssserver exists, skipping git clone")
         os.chdir(f"./rcssserver")
         self.run_command(f"{self.tools_dir}/rcssserver/bootstrap")
-        self.run_command(f"{self.tools_dir}/rcssserver/configure --prefix={self.configure_dir}")
+        self.run_command(f"{self.tools_dir}/rcssserver/configure --prefix={self.configure_for_tools_dir}")
         self.run_command(self.make_command)
         self.run_command(f"make install")
 
     def install_soccerwindow2(self):
         # Compile soccerwindow2
-        self.run_command(f"mkdir -p {self.configure_dir}")
+        self.run_command(f"mkdir -p {self.configure_for_tools_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/soccerwindow2"):
             self.run_command("git clone -b develop https://github.com/helios-base/soccerwindow2.git")
@@ -142,13 +142,13 @@ class SetupTools:
             print(f"{self.tools_dir}"+"/soccerwindow2 exists, skipping git clone")
         os.chdir(f"./soccerwindow2")
         self.run_command(f"{self.tools_dir}/soccerwindow2/bootstrap")
-        self.run_command(f"{self.tools_dir}/soccerwindow2/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
+        self.run_command(f"{self.tools_dir}/soccerwindow2/configure --prefix={self.configure_for_tools_dir} --with-librcsc={self.configure_for_tools_dir}")
         self.run_command(self.make_command)
         self.run_command(f"make install")
 
     def install_rcssmonitor(self):
         # Compile rcssmonitor
-        self.run_command(f"mkdir -p {self.configure_dir}")
+        self.run_command(f"mkdir -p {self.configure_for_tools_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/rcssmonitor"):
             self.run_command("git clone -b develop https://github.com/rcsoccersim/rcssmonitor.git")
@@ -156,13 +156,13 @@ class SetupTools:
             print(f"{self.tools_dir}"+"/rcssmonitor exists, skipping git clone")
         os.chdir(f"./rcssmonitor")
         self.run_command(f"{self.tools_dir}/rcssmonitor/bootstrap")
-        self.run_command(f"{self.tools_dir}/rcssmonitor/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
+        self.run_command(f"{self.tools_dir}/rcssmonitor/configure --prefix={self.configure_for_tools_dir} --with-librcsc={self.configure_for_tools_dir}")
         self.run_command(self.make_command)
         self.run_command(f"make install")
 
     def install_fedit2(self):
         # Compile fedit2
-        self.run_command(f"mkdir -p {self.configure_dir}")
+        self.run_command(f"mkdir -p {self.configure_for_tools_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/fedit2"):
             self.run_command("git clone -b develop https://github.com/helios-base/fedit2.git")
@@ -170,13 +170,13 @@ class SetupTools:
             print(f"{self.tools_dir}"+"/fedit2 exists, skipping git clone")
         os.chdir(f"./fedit2")
         self.run_command(f"{self.tools_dir}/fedit2/bootstrap")
-        self.run_command(f"{self.tools_dir}/fedit2/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
+        self.run_command(f"{self.tools_dir}/fedit2/configure --prefix={self.configure_for_tools_dir} --with-librcsc={self.configure_for_tools_dir}")
         self.run_command(self.make_command)
         self.run_command(f"make install")
     
     def install_loganalyzer3(self):
         # Compile loganalyzer3
-        self.run_command(f"mkdir -p {self.configure_dir}")
+        self.run_command(f"mkdir -p {self.configure_for_tools_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/loganalyzer3"):
             self.run_command("git clone https://github.com/opusymcomp/loganalyzer3.git")
@@ -191,7 +191,7 @@ class SetupTeams:
         self.teams_dir = self.base_dir + "/teams"
         self.user_teams_dir = f"/home/{username}/rcss/teams"
         self.base_team_dir = self.base_dir + "/teams/base_team"
-        self.configure_dir = self.base_dir + "/teams/base_team"
+        self.configure_for_teams_dir = self.base_dir + "/teams/base_team"
         self.jobs = args.jobs
         self.make_command = "make"
         if self.jobs:
@@ -232,8 +232,8 @@ class SetupTeams:
         os.chdir(f"./librcsc")
         self.run_command(f"make distclean")
         self.run_command(f"git checkout 348f41e")
-        self.run_command(f"{self.configure_dir}/librcsc/bootstrap")
-        self.run_command(f"{self.configure_dir}/librcsc/configure --prefix={self.configure_dir}")
+        self.run_command(f"{self.configure_for_teams_dir}/librcsc/bootstrap")
+        self.run_command(f"{self.configure_for_teams_dir}/librcsc/configure --prefix={self.configure_for_teams_dir}")
         self.run_command(self.make_command)
         self.run_command(f"make install")  
     
@@ -248,8 +248,8 @@ class SetupTeams:
         else:
             print(f"{self.base_team_dir}"+"/helios-base exists, skipping git clone")
         os.chdir(f"./helios-base")
-        self.run_command(f"{self.configure_dir}/helios-base/bootstrap")
-        self.run_command(f"{self.configure_dir}/helios-base/configure --with-librcsc={self.configure_dir}")
+        self.run_command(f"{self.configure_for_teams_dir}/helios-base/bootstrap")
+        self.run_command(f"{self.configure_for_teams_dir}/helios-base/configure --with-librcsc={self.configure_for_teams_dir}")
         self.run_command(self.make_command)
 
     def replace_username(self):
