@@ -6,16 +6,16 @@ import os
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--base_dir", dest="base_dir", default=os.path.expandvars("$HOME/rcss"), help="環境構築をするベースディレクトリを指定")
+    parser.add_argument("-d", "--base_dir", dest="base_dir", default=os.path.expandvars("$HOME/rcss"), help="Specify the base directory for environment setup")
     parser.add_argument("-t", "--install_target", dest="install_target", default="minisetup", 
                         choices=["all", "minisetup", "tools", "librcsc", "rcssserver", "soccerwindow2", 
                                  "rcssmonitor", "fedit2", "helios_base", "helios", "loganalyzer3"], 
-                        help="インストールする対象を指定する。allはすべて、minisetupは実行に必要な最小構成、それ以外の場合は指定した名前のツール・チームをインストールする")
-    parser.add_argument("-j", "--jobs", type=int, dest="jobs", help="コンパイル時に同時に実行するジョブ数を指定(make -j option)")
-    parser.add_argument("--upgrade_packages", action="store_true", dest="upgrade_packages", help="コンパイル実行前にパッケージアップデートをする場合は指定する")
+                        help="Specify the installation target. 'all' installs everything, 'minisetup' installs the minimal setup required for execution, and specific tools or teams are installed if specified.")
+    parser.add_argument("-j", "--jobs", type=int, dest="jobs", help="Specify the number of jobs to run simultaneously during compilation (make -j option)")
+    parser.add_argument("--upgrade_packages", action="store_true", dest="upgrade_packages", help="Specify if package updates should be performed before compiling")
     parser.add_argument("--is_installation_of_essential_packages", action="store_true", dest="is_installation_of_essential_packages", 
-                        help="コンパイル実行前にパッケージアップデートをする場合は指定する")
-    parser.add_argument("--add_environment_variable", action="store_true", dest="add_environment_variable", help="環境変数を追加する場合は指定する。初回セットアップ時は必須")
+                        help="Specify if essential packages should be installed before compilation")
+    parser.add_argument("--add_environment_variable", action="store_true", dest="add_environment_variable", help="Specify if environment variables should be added. Required during the initial setup.")
     args = parser.parse_args()
 
 
@@ -69,26 +69,26 @@ class SetupTools:
 
     def run_command(self, command):
         try:
-            # shell=TrueはOSコマンドインジェクションの恐れがあるので要注意
-            # 現状は各個人で使うので問題ないはず
+            # Be careful with shell=True, as it can lead to OS command injection
+            # Since this is currently used for personal purposes, it shouldn't be an issue
             result = subprocess.run(command, check=True, text=True, capture_output=True, shell=True)
             print(result.stdout)
-            print(f"実行が正常に終了しました: {command}\n\n")
+            print(f"Execution completed successfully: {command}\n\n")
         except subprocess.CalledProcessError as e:
-            # コマンドがエラーを返した場合
+            # When the command returns an error
             print(e.stderr)
-            print(f"コマンドにエラーが発生しました: {command}\n\n")
+            print(f"An error occurred with the command: {command}\n\n")
         except Exception as e:
-            # その他の例外
+            # Other exceptions
             print(e.stderr)
-            print(f"想定していないエラーが発生しました: {command}\n\n")
+            print(f"An unexpected error occurred: {command}\n\n")
 
     def upgrade_packages(self):
         self.run_command("sudo apt update -y")
         self.run_command("sudo apt upgrade -y")
 
     def install_essential_packages(self):
-        # 実行に必要なパッケージのインストール
+        # Install the essential packages for execution
         self.run_command("sudo apt-get install build-essential autoconf automake libtool")
         self.run_command("sudo apt-get install flex bison libboost-all-dev")
         self.run_command("sudo apt-get install libphonon-dev phonon-backend-gstreamer qt-sdk libaudio-dev")
@@ -98,20 +98,20 @@ class SetupTools:
         self.run_command("sudo apt install qtbase5-dev qt5-qmake")
 
     def add_environment_variables(self):
-        # 環境変数の追加
-        # 関数呼び出しごとに追記されるので要注意
+        # Add environment variables
+        # Note that this appends with each function call
         self.run_command("echo 'export LD_LIBRARY_PATH=$HOME/rcss/tools/lib:$LD_LIBRARY_PATH' >> ~/.bashrc")
         self.run_command("echo 'export PATH=$HOME/rcss/tools/bin:$PATH' >> ~/.profile")
         self.run_command("echo 'export RCSSMONITOR=sswindow2' >> ~/.bashrc")
 
     def install_librcsc(self):
-        # librcscのコンパイル
+        # Compile librcsc
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/librcsc"):
             self.run_command("git clone -b develop https://github.com/helios-base/librcsc.git")
         else:
-            print(f"{self.tools_dir}"+"/librcsc が存在するため、git cloneをスキップします")
+            print(f"{self.tools_dir}"+"/librcsc exists, skipping git clone")
         os.chdir(f"./librcsc")
         self.run_command(f"{self.tools_dir}/librcsc/bootstrap")
         self.run_command(f"{self.tools_dir}/librcsc/configure --prefix={self.configure_dir}")
@@ -119,13 +119,13 @@ class SetupTools:
         self.run_command(f"make install")
 
     def install_rcssserver(self):
-        # rcssserverのコンパイル
+        # Compile rcssserver
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/rcssserver"):
             self.run_command("git clone -b develop https://github.com/rcsoccersim/rcssserver.git")
         else:
-            print(f"{self.tools_dir}"+"/rcssserver が存在するため、git cloneをスキップします")
+            print(f"{self.tools_dir}"+"/rcssserver exists, skipping git clone")
         os.chdir(f"./rcssserver")
         self.run_command(f"{self.tools_dir}/rcssserver/bootstrap")
         self.run_command(f"{self.tools_dir}/rcssserver/configure --prefix={self.configure_dir}")
@@ -133,13 +133,13 @@ class SetupTools:
         self.run_command(f"make install")
 
     def install_soccerwindow2(self):
-        # soccerwindow2のコンパイル
+        # Compile soccerwindow2
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/soccerwindow2"):
             self.run_command("git clone -b develop https://github.com/helios-base/soccerwindow2.git")
         else:
-            print(f"{self.tools_dir}"+"/soccerwindow2 が存在するため、git cloneをスキップします")
+            print(f"{self.tools_dir}"+"/soccerwindow2 exists, skipping git clone")
         os.chdir(f"./soccerwindow2")
         self.run_command(f"{self.tools_dir}/soccerwindow2/bootstrap")
         self.run_command(f"{self.tools_dir}/soccerwindow2/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
@@ -147,13 +147,13 @@ class SetupTools:
         self.run_command(f"make install")
 
     def install_rcssmonitor(self):
-        # rcssmonitorのコンパイル
+        # Compile rcssmonitor
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/rcssmonitor"):
             self.run_command("git clone -b develop https://github.com/rcsoccersim/rcssmonitor.git")
         else:
-            print(f"{self.tools_dir}"+"/rcssmonitor が存在するため、git cloneをスキップします")
+            print(f"{self.tools_dir}"+"/rcssmonitor exists, skipping git clone")
         os.chdir(f"./rcssmonitor")
         self.run_command(f"{self.tools_dir}/rcssmonitor/bootstrap")
         self.run_command(f"{self.tools_dir}/rcssmonitor/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
@@ -161,13 +161,13 @@ class SetupTools:
         self.run_command(f"make install")
 
     def install_fedit2(self):
-        # fedit2のコンパイル
+        # Compile fedit2
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/fedit2"):
             self.run_command("git clone -b develop https://github.com/helios-base/fedit2.git")
         else:
-            print(f"{self.tools_dir}"+"/fedit2 が存在するため、git cloneをスキップします")
+            print(f"{self.tools_dir}"+"/fedit2 exists, skipping git clone")
         os.chdir(f"./fedit2")
         self.run_command(f"{self.tools_dir}/fedit2/bootstrap")
         self.run_command(f"{self.tools_dir}/fedit2/configure --prefix={self.configure_dir} --with-librcsc={self.configure_dir}")
@@ -175,17 +175,17 @@ class SetupTools:
         self.run_command(f"make install")
     
     def install_loganalyzer3(self):
-        # loganalyzer3のコンパイル
+        # Compile loganalyzer3
         self.run_command(f"mkdir -p {self.configure_dir}")
         os.chdir(f"{self.tools_dir}")
         if not os.path.exists(self.tools_dir+"/loganalyzer3"):
             self.run_command("git clone https://github.com/opusymcomp/loganalyzer3.git")
         else:
-            print(f"{self.tools_dir}"+"/loganalyzer3 が存在するため、git cloneをスキップします")
+            print(f"{self.tools_dir}"+"/loganalyzer3 exists, skipping git clone")
 
 class SetupTeams:
     def __init__(self, args):
-        # 実行者のユーザー名を動的に取得してパスを構築
+        # Dynamically get the username of the executor and construct the path
         username = os.getlogin()
         self.base_dir = args.base_dir
         self.teams_dir = self.base_dir + "/teams"
@@ -199,19 +199,19 @@ class SetupTeams:
 
     def run_command(self, command):
         try:
-            # shell=Trueは05コマンドインジェクションの恐れがあるので要注意
-            # 現状は各個人で使うので問題ないはず
+            # Be careful with shell=True, as it can lead to OS command injection
+            # Since this is currently used for personal purposes, it shouldn't be an issue
             result = subprocess.run(command, check=True, text=True, capture_output=True, shell=True)
             print(result.stdout)
-            print(f"実行が正常に終了しました: {command}\n")
+            print(f"Execution completed successfully: {command}\n")
         except subprocess.CalledProcessError as e:
-            # コマンドエラーを返した場合
+            # When the command returns an error
             print(e.stderr)
-            print(f"コマンドにエラーが発生しました: {command}\n\n")
+            print(f"An error occurred with the command: {command}\n\n")
         except Exception as e:
-            # その他の例外
+            # Other exceptions
             print(e.stderr)
-            print(f"想定していないエラーが発生しました: {command}\n\n")    
+            print(f"An unexpected error occurred: {command}\n\n")    
 
     def install_teams(self):
         self.run_command(f"mkdir -p {self.base_dir}")
@@ -219,16 +219,16 @@ class SetupTeams:
         if not os.path.exists(f"{self.teams_dir}"):
             self.run_command("git clone https://github.com/omusymcomp/robocup_teams.git teams")
         else:
-            print(f"{self.teams_dir}"+"が存在するため、git clone をスキップします")   
+            print(f"{self.teams_dir} exists, skipping git clone")   
 
     def install_librcsc_for_helios_base(self):
-        # librcscのコンパイル
+        # Compile librcsc
         self.run_command(f"mkdir -p {self.base_team_dir}")
         os.chdir(f"{self.base_team_dir}")
         if not os.path.exists(self.base_team_dir+"/librcsc"):
             self.run_command("git clone -b develop https://github.com/helios-base/librcsc.git")
         else:
-            print(f"{self.base_team_dir}"+"/librcsc が存在するため、git cloneをスキップします")
+            print(f"{self.base_team_dir}"+"/librcsc exists, skipping git clone")
         os.chdir(f"./librcsc")
         self.run_command(f"git checkout 348f41e")
         self.run_command(f"{self.configure_dir}/librcsc/bootstrap")
@@ -238,61 +238,61 @@ class SetupTeams:
     
     def install_helios_base(self):
         self.run_command(f"mkdir -p {self.base_team_dir}")
-        # HELIOS-Base用のlibrcscのコンパイル
+        # Compile librcsc for HELIOS-Base
         self.install_librcsc_for_helios_base()
-        # HELIOS-Baseのコンパイル
+        # Compile HELIOS-Base
         os.chdir(f"{self.base_team_dir}")
         if not os.path.exists(self.base_team_dir+"/helios-base"):
             self.run_command("git clone -b develop https://github.com/helios-base/helios-base.git")
         else:
-            print(f"{self.base_team_dir}"+"/helios-base が存在するため、git cloneをスキップします")
+            print(f"{self.base_team_dir}"+"/helios-base exists, skipping git clone")
         os.chdir(f"./helios-base")
         self.run_command(f"{self.configure_dir}/helios-base/bootstrap")
         self.run_command(f"{self.configure_dir}/helios-base/configure --with-librcsc={self.configure_dir}")
         self.run_command(self.make_command)
 
     def replace_username(self):
-        # 実行者のユーザー名を取得
+        # Get the username of the executor
         username = os.getlogin()
         directory = self.user_teams_dir
         try:
             if not os.path.exists(directory):
-                print(f"指定されたディレクトリが存在しません: {directory}")
+                print(f"The specified directory does not exist: {directory}")
                 return
 
-            # 指定されたディレクトリ内のすべてのファイルを処理
+            # Process all files in the specified directory
             for root, dirs, files in os.walk(directory):
-                # .git ディレクトリをスキップ
+                # Skip the .git directory
                 if '.git' in dirs:
                     dirs.remove('.git')
 
                 for file in files:
-                    # 対象ファイルをテキストとして開く
+                    # Open target files as text
                     file_path = os.path.join(root, file)
                     
-                    # ファイルの内容を読み込む
+                    # Read file content
                     with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                         content = f.read()
 
-                    # "username" を実行者のユーザー名に置き換える
+                    # Replace "username" with the executor's username
                     updated_content = content.replace('/home/username/', f'/home/{username}/')
 
-                    # ファイルの内容を上書き保存
+                    # Overwrite the file with the updated content
                     with open(file_path, 'w') as f:
                         f.write(updated_content)
 
-            print("ファイル内のパスの置換が完了しました")
+            print("Path replacement within files has been completed")
         
         except Exception as e:
-            # その他の例外
+            # Other exceptions
             print(str(e))
-            print("想定していないエラーが発生しました") 
+            print("An unexpected error occurred") 
 
     def add_execution_permission(self):
         directory = self.user_teams_dir
         for root, dirs, files in os.walk(directory):
             for file in files:
-                # スクリプトファイルの拡張子や特定のファイル名に基づいて実行権限を付与
+                # Add execution permission based on script file extension or specific filenames
                 if file.endswith('.sh') or 'start' in file:
                     file_path = os.path.join(root, file)
                     self.run_command(f"chmod +x {file_path}")
