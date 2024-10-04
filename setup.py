@@ -97,7 +97,7 @@ class SetupTools:
         self.run_command("sudo apt-get install flex bison libboost-all-dev")
         self.run_command("sudo apt-get install qtbase5-dev qt5-qmake libfontconfig1-dev libaudio-dev")
         self.run_command("libxt-dev libglib2.0-dev libxi-dev libxrender-dev")
-        self.run_command("sudo aot-get install git-lfs")
+        self.run_command("sudo apt-get install git-lfs")
         self.run_command("git lfs install")
 
     def add_environment_variables(self):
