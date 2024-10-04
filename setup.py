@@ -221,6 +221,8 @@ class SetupTeams:
         os.chdir(f"{self.base_dir}")
         if not os.path.exists(f"{self.teams_dir}"):
             self.run_command("git clone https://github.com/omusymcomp/robocup_teams.git teams")
+            os.chdir(self.teams_dir)
+            self.run_command("git lfs pull")
         else:
             print(f"{self.teams_dir} exists, skipping git clone")   
 
