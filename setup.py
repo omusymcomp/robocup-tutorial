@@ -95,11 +95,7 @@ class SetupTools:
         # Install the essential packages for execution
         self.run_command("sudo apt-get install build-essential autoconf automake libtool")
         self.run_command("sudo apt-get install flex bison libboost-all-dev")
-        self.run_command("sudo apt-get install libphonon-dev phonon-backend-gstreamer qt-sdk libaudio-dev")
-        self.run_command("sudo apt-get install libxt-dev libglib2.0-dev libsm-dev libice-dev")
-        self.run_command("sudo apt-get install libxi-dev libxrender-dev libfreetype6-dev libfontconfig1-dev")
-        self.run_command("sudo apt install qtbase5-dev qttools5-dev-tools qt5-default")
-        self.run_command("sudo apt install qtbase5-dev qt5-qmake")
+        self.run_command("sudo apt-get install qtbase5-dev qt5-qmake libfontconfig1-dev libaudio-dev libxt-dev libglib2.0-dev libxi-dev libxrender-dev")
 
     def add_environment_variables(self):
         # Add environment variables
