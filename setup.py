@@ -28,20 +28,7 @@ def main():
 
     setup_teams = SetupTeams(args)
 
-    # Perform package upgrade and essential package installation if specified
-    if args.upgrade_packages:
-        setup_tools.upgrade_packages()
-
-    if args.is_installation_of_essential_packages:
-        setup_tools.install_essential_packages()
-
-    if args.add_environment_variable:
-        setup_tools.add_environment_variables()
-
-    if args.install_target == "teams":
-        setup_teams.install_teams()
-        setup_teams.replace_username()
-    elif args.install_target == "all":
+    if args.install_target == "all":
         setup_tools.install_librcsc()
         setup_tools.install_rcssserver()
         setup_tools.install_soccerwindow2()
@@ -212,7 +199,7 @@ class SetupTeams:
         self.base_dir = args.base_dir
         self.teams_dir = os.path.join(self.base_dir, "teams")
         self.user_teams_dir = f"/home/{username}/rcss/teams"
-        self.base_team_dir = os.path.join(self.base_dir, "base_team")
+        self.base_team_dir = os.path.join(self.base_dir, "teams", "base_team")
         self.configure_for_teams_dir = self.base_team_dir
         self.jobs = args.jobs
         self.make_command = "make"
