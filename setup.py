@@ -10,7 +10,7 @@ def main():
     parser.add_argument("-d", "--base_dir", dest="base_dir", default=os.path.expandvars("$HOME/rcss"), help="Specify the base directory for environment setup")
     parser.add_argument("-t", "--install_target", dest="install_target", default="minisetup", 
                         choices=["all", "minisetup", "tools", "librcsc", "rcssserver", "soccerwindow2", 
-                                 "rcssmonitor", "fedit2", "helios_base", "helios", "loganalyzer3"], 
+                                 "rcssmonitor", "fedit2", "helios_base", "helios", "loganalyzer3", "teams"], 
                         help="Specify the installation target. 'all' installs everything, 'minisetup' installs the minimal setup required for execution, and specific tools or teams are installed if specified.")
     parser.add_argument("-j", "--jobs", type=int, dest="jobs", help="Specify the number of jobs to run simultaneously during compilation (make -j option)")
     parser.add_argument("--upgrade_packages", action="store_true", dest="upgrade_packages", help="Specify if package updates should be performed before compiling")
@@ -34,6 +34,9 @@ def main():
 
     if args.add_environment_variable:
         setup_tools.add_environment_variables()
+    
+    if args.install_target == "teams":
+        setup_teams.install_teams()
 
     if args.install_target == "all":
         setup_tools.install_librcsc()
@@ -58,6 +61,8 @@ def main():
         setup_tools.install_rcssmonitor()
         setup_tools.install_fedit2()
         setup_tools.install_loganalyzer3()
+    elif args.install_target == "teams":
+        setup_teams.install_teams()
     else:
         called_method = getattr(setup_tools, f"install_{args.install_target}")
         called_method()
