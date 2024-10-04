@@ -5,7 +5,6 @@ import os
 
 
 def main():
-    ensure_essential_commands()
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--base_dir", dest="base_dir", default=os.path.expandvars("$HOME/rcss"), help="Specify the base directory for environment setup")
     parser.add_argument("-t", "--install_target", dest="install_target", default="minisetup", 
@@ -19,8 +18,12 @@ def main():
     parser.add_argument("--add_environment_variable", action="store_true", dest="add_environment_variable", help="Specify if environment variables should be added. Required during the initial setup.")
     args = parser.parse_args()
 
-
     setup_tools = SetupTools(args)
+    
+    setup_tools.upgrade_packages()  
+    setup_tools.install_essential_packages()  
+    setup_tools.add_environment_variables()
+
     setup_teams = SetupTeams(args)
     if args.upgrade_packages:
         setup_tools.upgrade_packages()
@@ -58,16 +61,6 @@ def main():
         called_method = getattr(setup_tools, f"install_{args.install_target}")
         called_method()
 
-def ensure_essential_commands():
-    try:
-        subprocess.run("sudo apt-get update", check=True, shell=True)
-        subprocess.run("sudo apt-get install -y python3 python3-pip", check=True, shell=True)
-        subprocess.run("sudo apt install -y build-essential libboost-all-dev autoconf automake libtool", check=True, shell=True)
-        print("The required packages were successfully installed.")
-    except subprocess.CalledProcessError as e:
-        print(f"Failed to execute the command: {e}")
-        sys.exit(1)
-        
 class SetupTools:
     def __init__(self, args):
         self.base_dir = args.base_dir
