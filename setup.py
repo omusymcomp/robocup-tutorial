@@ -71,9 +71,19 @@ class SetupTools:
         try:
             # Be careful with shell=True, as it can lead to OS command injection
             # Since this is currently used for personal purposes, it shouldn't be an issue
-            result = subprocess.run(command, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=cwd)
+            result = subprocess.run(
+                command,
+                check=True,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True,
+                cwd=cwd
+            )
             print(result.stdout)
-            print(f"Execution completed successfully: {command}\n")
+            # Determine the absolute path of the current working directory
+            current_dir = os.path.abspath(cwd) if cwd else os.getcwd()
+            print(f"Execution completed successfully: {current_dir} {command}\n")
         except subprocess.CalledProcessError as e:
             # When the command returns an error
             print(f"Command '{command}' failed with return code {e.returncode}")
