@@ -21,6 +21,11 @@ def main():
     args = parser.parse_args()
 
     setup_tools = SetupTools(args)
+    
+    setup_tools.upgrade_packages()  
+    setup_tools.install_essential_packages()  
+    setup_tools.add_environment_variables()
+
     setup_teams = SetupTeams(args)
 
     # Perform package upgrade and essential package installation if specified
