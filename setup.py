@@ -330,19 +330,19 @@ class SetupTeams:
             print(str(e))
             print("An unexpected error occurred")
 
-def is_binary_file(self, file_path):
-    """
-    Check if a file is binary.
-    """
-    try:
-        with open(file_path, 'rb') as f:
-            chunk = f.read(1024)
-            if b'\0' in chunk:
-                return True  # Binary file
-        return False  # Text file
-    except Exception as e:
-        # If there's an error opening the file, treat it as binary
-        return True
+    def is_binary_file(self, file_path):
+        """
+        Check if a file is binary.
+        """
+        try:
+            with open(file_path, 'rb') as f:
+                chunk = f.read(1024)
+                if b'\0' in chunk:
+                    return True  # Binary file
+            return False  # Text file
+        except Exception as e:
+            # If there's an error opening the file, treat it as binary
+            return True
 
     def add_execution_permission(self):
         # Add execution permission to scripts
