@@ -306,18 +306,21 @@ class SetupTeams:
                     dirs.remove('.git')
 
                 for file in files:
-                    # Open target files as text
                     file_path = os.path.join(root, file)
+
+                    # Skip binary files
+                    if self.is_binary_file(file_path):
+                        continue
 
                     # Read file content
                     with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                         content = f.read()
 
-                    # Replace "username" with the executor's username
+                    # Replace "/home/username/" with the executor's username
                     updated_content = content.replace('/home/username/', f'/home/{username}/')
 
                     # Overwrite the file with the updated content
-                    with open(file_path, 'w') as f:
+                    with open(file_path, 'w', encoding='utf-8') as f:
                         f.write(updated_content)
 
             print("Path replacement within files has been completed")
@@ -326,6 +329,20 @@ class SetupTeams:
             # Other exceptions
             print(str(e))
             print("An unexpected error occurred")
+
+def is_binary_file(self, file_path):
+    """
+    Check if a file is binary.
+    """
+    try:
+        with open(file_path, 'rb') as f:
+            chunk = f.read(1024)
+            if b'\0' in chunk:
+                return True  # Binary file
+        return False  # Text file
+    except Exception as e:
+        # If there's an error opening the file, treat it as binary
+        return True
 
     def add_execution_permission(self):
         # Add execution permission to scripts
