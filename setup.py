@@ -206,7 +206,7 @@ class SetupTeams:
         self.base_dir = args.base_dir
         self.teams_dir = os.path.join(self.base_dir, "teams")
         self.user_teams_dir = f"/home/{username}/rcss/teams"
-        self.base_team_dir = os.path.join(self.base_dir, "teams", "base_team")
+        self.base_team_dir = os.path.join(self.base_dir, "base_team")
         self.configure_for_teams_dir = self.base_team_dir
         self.jobs = args.jobs
         self.make_command = "make"
