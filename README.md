@@ -23,7 +23,11 @@ This tool automates the process of setting up the RoboCup Soccer 2D League envir
     git clone https://github.com/your-username/rcsssetup.git
     cd rcsssetup
     ```
-2. **Set up the environment**:
+2. **Install Python 3 and pip**
+    ```bash
+    sudo apt-get install -y python3 python3-pip
+    ```
+3. **Set up the environment**:
     Use the script to install everything necessary to run RoboCup Soccer 2D League:
     ```bash
     python3 setup.py 
