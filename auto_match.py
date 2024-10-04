@@ -11,11 +11,13 @@ def main():
     parser.add_argument("-d", "--base_dir", dest="base_dir", default=os.path.expandvars("$HOME/rcss"), 
                         help="環境構築されているベースディレクトリを指定")
     parser.add_argument("-l", "--left_team_name", dest="left_team_name", default="helios-base", 
-                        choices=["custom", "HELIOS2023", "RoboCIn", "CYRUS", 
-                                 "FRA-UNIted", "yushan2023"], help="左側のチーム名を指定")
+                        choices=["custom", "HELIOS2023", "helios-base", "yushan2023", "CYRUS",
+                                 "EMPEROR", "Hermes2D", "Oxsy", "RoboCIn", "Damavand", "FRA-UNIted",
+                                 "Hades2D", "ITAndorids", "The8"], help="左側のチーム名を指定")
     parser.add_argument("-r", "--right_team_name", dest="right_team_name", default="HELIOS2023", 
-                        choices=["custom", "HELIOS", "HELIOS-Base", "yushan2022", "cyrus2022",
-                                 "helios2022", "fra-united2022", "alice2022"], help="右側のチーム名を指定")
+                        choices=["custom", "HELIOS2023", "helios-base", "yushan2023", "CYRUS",
+                                 "EMPEROR", "Hermes2D", "Oxsy", "RoboCIn", "Damavand", "FRA-UNIted",
+                                 "Hades2D", "ITAndorids", "The8"], help="右側のチーム名を指定")
     #parser.add_argument("-fl", "--fixed_teamname_l", dest="fixed_teamname_l", default="", 
     #                    help="表記上の左側のチームの名前を指定する。デフォルトだと登録されている名前をそのまま利用する")
     #parser.add_argument("-fr", "--fixed_teamname_r", dest="fixed_teamname_r", default="", 
