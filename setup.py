@@ -5,40 +5,37 @@ import os
 
 
 def main():
+    # Initialize Git LFS globally
     subprocess.run("git lfs install --skip-repo", check=True, shell=True)
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--base_dir", dest="base_dir", default=os.path.expandvars("$HOME/rcss"), help="Specify the base directory for environment setup")
-    parser.add_argument("-t", "--install_target", dest="install_target", default="minisetup", 
-                        choices=["all", "minisetup", "tools", "librcsc", "rcssserver", "soccerwindow2", 
-                                 "rcssmonitor", "fedit2", "helios_base", "helios", "loganalyzer3", "teams"], 
+    parser.add_argument("-t", "--install_target", dest="install_target", default="minisetup",
+                        choices=["all", "minisetup", "tools", "librcsc", "rcssserver", "soccerwindow2",
+                                 "rcssmonitor", "fedit2", "helios_base", "helios", "loganalyzer3", "teams"],
                         help="Specify the installation target. 'all' installs everything, 'minisetup' installs the minimal setup required for execution, and specific tools or teams are installed if specified.")
     parser.add_argument("-j", "--jobs", type=int, dest="jobs", help="Specify the number of jobs to run simultaneously during compilation (make -j option)")
     parser.add_argument("--upgrade_packages", action="store_true", dest="upgrade_packages", help="Specify if package updates should be performed before compiling")
-    parser.add_argument("--is_installation_of_essential_packages", action="store_true", dest="is_installation_of_essential_packages", 
+    parser.add_argument("--is_installation_of_essential_packages", action="store_true", dest="is_installation_of_essential_packages",
                         help="Specify if essential packages should be installed before compilation")
     parser.add_argument("--add_environment_variable", action="store_true", dest="add_environment_variable", help="Specify if environment variables should be added. Required during the initial setup.")
     args = parser.parse_args()
 
     setup_tools = SetupTools(args)
-    
-    setup_tools.upgrade_packages()  
-    setup_tools.install_essential_packages()  
-    setup_tools.add_environment_variables()
-
     setup_teams = SetupTeams(args)
+
+    # Perform package upgrade and essential package installation if specified
     if args.upgrade_packages:
         setup_tools.upgrade_packages()
-    
+
     if args.is_installation_of_essential_packages:
         setup_tools.install_essential_packages()
 
     if args.add_environment_variable:
         setup_tools.add_environment_variables()
-    
+
     if args.install_target == "teams":
         setup_teams.install_teams()
-
-    if args.install_target == "all":
+    elif args.install_target == "all":
         setup_tools.install_librcsc()
         setup_tools.install_rcssserver()
         setup_tools.install_soccerwindow2()
@@ -61,37 +58,40 @@ def main():
         setup_tools.install_rcssmonitor()
         setup_tools.install_fedit2()
         setup_tools.install_loganalyzer3()
-    elif args.install_target == "teams":
-        setup_teams.install_teams()
     else:
+        # Call the method corresponding to the specified install target
         called_method = getattr(setup_tools, f"install_{args.install_target}")
         called_method()
+
 
 class SetupTools:
     def __init__(self, args):
         self.base_dir = args.base_dir
-        self.tools_dir = self.base_dir + "/tools"
-        self.configure_for_tools_dir = self.base_dir + "/tools"
+        self.tools_dir = os.path.join(self.base_dir, "tools")
+        self.configure_for_tools_dir = os.path.join(self.base_dir, "tools")
         self.jobs = args.jobs
         self.make_command = "make"
         if self.jobs:
             self.make_command += f" -j {self.jobs}"
 
-    def run_command(self, command):
+    def run_command(self, command, cwd=None):
         try:
             # Be careful with shell=True, as it can lead to OS command injection
             # Since this is currently used for personal purposes, it shouldn't be an issue
-            result = subprocess.run(command, check=True, text=True, capture_output=True, shell=True)
+            result = subprocess.run(command, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=cwd)
             print(result.stdout)
-            print(f"Execution completed successfully: {command}\n\n")
+            print(f"Execution completed successfully: {command}\n")
         except subprocess.CalledProcessError as e:
             # When the command returns an error
-            print(e.stderr)
-            print(f"An error occurred with the command: {command}\n\n")
+            print(f"Command '{command}' failed with return code {e.returncode}")
+            print(f"stdout:\n{e.stdout}")
+            print(f"stderr:\n{e.stderr}")
+            sys.exit(1)
         except Exception as e:
             # Other exceptions
-            print(e.stderr)
-            print(f"An unexpected error occurred: {command}\n\n")
+            print(f"An unexpected error occurred while running command: {command}")
+            print(str(e))
+            sys.exit(1)
 
     def upgrade_packages(self):
         self.run_command("sudo apt update -y")
@@ -99,11 +99,11 @@ class SetupTools:
 
     def install_essential_packages(self):
         # Install the essential packages for execution
-        self.run_command("sudo apt-get install build-essential autoconf automake libtool")
-        self.run_command("sudo apt-get install flex bison libboost-all-dev")
-        self.run_command("sudo apt-get install qtbase5-dev qt5-qmake libfontconfig1-dev libaudio-dev")
-        self.run_command("sudo apt-get install libxt-dev libglib2.0-dev libxi-dev libxrender-dev")
-        self.run_command("sudo apt-get install git-lfs")
+        self.run_command("sudo apt-get install -y build-essential autoconf automake libtool")
+        self.run_command("sudo apt-get install -y flex bison libboost-all-dev")
+        self.run_command("sudo apt-get install -y qtbase5-dev qt5-qmake libfontconfig1-dev libaudio-dev")
+        self.run_command("sudo apt-get install -y libxt-dev libglib2.0-dev libxi-dev libxrender-dev")
+        self.run_command("sudo apt-get install -y git-lfs")
         self.run_command("git lfs install")
 
     def add_environment_variables(self):
@@ -115,153 +115,164 @@ class SetupTools:
 
     def install_librcsc(self):
         # Compile librcsc
-        self.run_command(f"mkdir -p {self.configure_for_tools_dir}")
-        os.chdir(f"{self.tools_dir}")
-        if not os.path.exists(self.tools_dir+"/librcsc"):
-            self.run_command("git clone -b develop https://github.com/helios-base/librcsc.git")
+        os.makedirs(self.configure_for_tools_dir, exist_ok=True)
+        if not os.path.exists(os.path.join(self.tools_dir, "librcsc")):
+            self.run_command("git clone -b develop https://github.com/helios-base/librcsc.git", cwd=self.tools_dir)
+            # Obtain Git LFS objects
+            self.run_command("git lfs pull", cwd=os.path.join(self.tools_dir, "librcsc"))
         else:
-            print(f"{self.tools_dir}"+"/librcsc exists, skipping git clone")
-        os.chdir(f"./librcsc")
-        self.run_command(f"{self.tools_dir}/librcsc/bootstrap")
-        self.run_command(f"{self.tools_dir}/librcsc/configure --prefix={self.configure_for_tools_dir}")
-        self.run_command(self.make_command)
-        self.run_command(f"make install")
+            print(f"{self.tools_dir}/librcsc exists, skipping git clone")
+        librcsc_dir = os.path.join(self.tools_dir, "librcsc")
+        self.run_command("./bootstrap", cwd=librcsc_dir)
+        self.run_command(f"./configure --prefix={self.configure_for_tools_dir}", cwd=librcsc_dir)
+        self.run_command(self.make_command, cwd=librcsc_dir)
+        self.run_command("make install", cwd=librcsc_dir)
 
     def install_rcssserver(self):
         # Compile rcssserver
-        self.run_command(f"mkdir -p {self.configure_for_tools_dir}")
-        os.chdir(f"{self.tools_dir}")
-        if not os.path.exists(self.tools_dir+"/rcssserver"):
-            self.run_command("git clone -b develop https://github.com/rcsoccersim/rcssserver.git")
+        os.makedirs(self.configure_for_tools_dir, exist_ok=True)
+        if not os.path.exists(os.path.join(self.tools_dir, "rcssserver")):
+            self.run_command("git clone -b develop https://github.com/rcsoccersim/rcssserver.git", cwd=self.tools_dir)
+            # Obtain Git LFS objects
+            self.run_command("git lfs pull", cwd=os.path.join(self.tools_dir, "rcssserver"))
         else:
-            print(f"{self.tools_dir}"+"/rcssserver exists, skipping git clone")
-        os.chdir(f"./rcssserver")
-        self.run_command(f"{self.tools_dir}/rcssserver/bootstrap")
-        self.run_command(f"{self.tools_dir}/rcssserver/configure --prefix={self.configure_for_tools_dir}")
-        self.run_command(self.make_command)
-        self.run_command(f"make install")
+            print(f"{self.tools_dir}/rcssserver exists, skipping git clone")
+        rcssserver_dir = os.path.join(self.tools_dir, "rcssserver")
+        self.run_command("./bootstrap", cwd=rcssserver_dir)
+        self.run_command(f"./configure --prefix={self.configure_for_tools_dir}", cwd=rcssserver_dir)
+        self.run_command(self.make_command, cwd=rcssserver_dir)
+        self.run_command("make install", cwd=rcssserver_dir)
 
     def install_soccerwindow2(self):
         # Compile soccerwindow2
-        self.run_command(f"mkdir -p {self.configure_for_tools_dir}")
-        os.chdir(f"{self.tools_dir}")
-        if not os.path.exists(self.tools_dir+"/soccerwindow2"):
-            self.run_command("git clone -b develop https://github.com/helios-base/soccerwindow2.git")
+        os.makedirs(self.configure_for_tools_dir, exist_ok=True)
+        if not os.path.exists(os.path.join(self.tools_dir, "soccerwindow2")):
+            self.run_command("git clone -b develop https://github.com/helios-base/soccerwindow2.git", cwd=self.tools_dir)
+            # Obtain Git LFS objects
+            self.run_command("git lfs pull", cwd=os.path.join(self.tools_dir, "soccerwindow2"))
         else:
-            print(f"{self.tools_dir}"+"/soccerwindow2 exists, skipping git clone")
-        os.chdir(f"./soccerwindow2")
-        self.run_command(f"{self.tools_dir}/soccerwindow2/bootstrap")
-        self.run_command(f"{self.tools_dir}/soccerwindow2/configure --prefix={self.configure_for_tools_dir} --with-librcsc={self.configure_for_tools_dir}")
-        self.run_command(self.make_command)
-        self.run_command(f"make install")
+            print(f"{self.tools_dir}/soccerwindow2 exists, skipping git clone")
+        soccerwindow2_dir = os.path.join(self.tools_dir, "soccerwindow2")
+        self.run_command("./bootstrap", cwd=soccerwindow2_dir)
+        self.run_command(f"./configure --prefix={self.configure_for_tools_dir} --with-librcsc={self.configure_for_tools_dir}", cwd=soccerwindow2_dir)
+        self.run_command(self.make_command, cwd=soccerwindow2_dir)
+        self.run_command("make install", cwd=soccerwindow2_dir)
 
     def install_rcssmonitor(self):
         # Compile rcssmonitor
-        self.run_command(f"mkdir -p {self.configure_for_tools_dir}")
-        os.chdir(f"{self.tools_dir}")
-        if not os.path.exists(self.tools_dir+"/rcssmonitor"):
-            self.run_command("git clone -b develop https://github.com/rcsoccersim/rcssmonitor.git")
+        os.makedirs(self.configure_for_tools_dir, exist_ok=True)
+        if not os.path.exists(os.path.join(self.tools_dir, "rcssmonitor")):
+            self.run_command("git clone -b develop https://github.com/rcsoccersim/rcssmonitor.git", cwd=self.tools_dir)
+            # Obtain Git LFS objects
+            self.run_command("git lfs pull", cwd=os.path.join(self.tools_dir, "rcssmonitor"))
         else:
-            print(f"{self.tools_dir}"+"/rcssmonitor exists, skipping git clone")
-        os.chdir(f"./rcssmonitor")
-        self.run_command(f"{self.tools_dir}/rcssmonitor/bootstrap")
-        self.run_command(f"{self.tools_dir}/rcssmonitor/configure --prefix={self.configure_for_tools_dir} --with-librcsc={self.configure_for_tools_dir}")
-        self.run_command(self.make_command)
-        self.run_command(f"make install")
+            print(f"{self.tools_dir}/rcssmonitor exists, skipping git clone")
+        rcssmonitor_dir = os.path.join(self.tools_dir, "rcssmonitor")
+        self.run_command("./bootstrap", cwd=rcssmonitor_dir)
+        self.run_command(f"./configure --prefix={self.configure_for_tools_dir} --with-librcsc={self.configure_for_tools_dir}", cwd=rcssmonitor_dir)
+        self.run_command(self.make_command, cwd=rcssmonitor_dir)
+        self.run_command("make install", cwd=rcssmonitor_dir)
 
     def install_fedit2(self):
         # Compile fedit2
-        self.run_command(f"mkdir -p {self.configure_for_tools_dir}")
-        os.chdir(f"{self.tools_dir}")
-        if not os.path.exists(self.tools_dir+"/fedit2"):
-            self.run_command("git clone -b develop https://github.com/helios-base/fedit2.git")
+        os.makedirs(self.configure_for_tools_dir, exist_ok=True)
+        if not os.path.exists(os.path.join(self.tools_dir, "fedit2")):
+            self.run_command("git clone -b develop https://github.com/helios-base/fedit2.git", cwd=self.tools_dir)
+            # Obtain Git LFS objects
+            self.run_command("git lfs pull", cwd=os.path.join(self.tools_dir, "fedit2"))
         else:
-            print(f"{self.tools_dir}"+"/fedit2 exists, skipping git clone")
-        os.chdir(f"./fedit2")
-        self.run_command(f"{self.tools_dir}/fedit2/bootstrap")
-        self.run_command(f"{self.tools_dir}/fedit2/configure --prefix={self.configure_for_tools_dir} --with-librcsc={self.configure_for_tools_dir}")
-        self.run_command(self.make_command)
-        self.run_command(f"make install")
-    
+            print(f"{self.tools_dir}/fedit2 exists, skipping git clone")
+        fedit2_dir = os.path.join(self.tools_dir, "fedit2")
+        self.run_command("./bootstrap", cwd=fedit2_dir)
+        self.run_command(f"./configure --prefix={self.configure_for_tools_dir} --with-librcsc={self.configure_for_tools_dir}", cwd=fedit2_dir)
+        self.run_command(self.make_command, cwd=fedit2_dir)
+        self.run_command("make install", cwd=fedit2_dir)
+
     def install_loganalyzer3(self):
         # Compile loganalyzer3
-        self.run_command(f"mkdir -p {self.configure_for_tools_dir}")
-        os.chdir(f"{self.tools_dir}")
-        if not os.path.exists(self.tools_dir+"/loganalyzer3"):
-            self.run_command("git clone https://github.com/opusymcomp/loganalyzer3.git")
+        os.makedirs(self.configure_for_tools_dir, exist_ok=True)
+        if not os.path.exists(os.path.join(self.tools_dir, "loganalyzer3")):
+            self.run_command("git clone https://github.com/opusymcomp/loganalyzer3.git", cwd=self.tools_dir)
+            # Obtain Git LFS objects
+            self.run_command("git lfs pull", cwd=os.path.join(self.tools_dir, "loganalyzer3"))
         else:
-            print(f"{self.tools_dir}"+"/loganalyzer3 exists, skipping git clone")
+            print(f"{self.tools_dir}/loganalyzer3 exists, skipping git clone")
+
 
 class SetupTeams:
     def __init__(self, args):
         # Dynamically get the username of the executor and construct the path
         username = os.getlogin()
         self.base_dir = args.base_dir
-        self.teams_dir = self.base_dir + "/teams"
+        self.teams_dir = os.path.join(self.base_dir, "teams")
         self.user_teams_dir = f"/home/{username}/rcss/teams"
-        self.base_team_dir = self.base_dir + "/teams/base_team"
-        self.configure_for_teams_dir = self.base_dir + "/teams/base_team"
+        self.base_team_dir = os.path.join(self.base_dir, "teams", "base_team")
+        self.configure_for_teams_dir = self.base_team_dir
         self.jobs = args.jobs
         self.make_command = "make"
         if self.jobs:
             self.make_command += f" -j {self.jobs}"
 
-    def run_command(self, command):
+    def run_command(self, command, cwd=None):
         try:
             # Be careful with shell=True, as it can lead to OS command injection
             # Since this is currently used for personal purposes, it shouldn't be an issue
-            result = subprocess.run(command, check=True, text=True, capture_output=True, shell=True)
+            result = subprocess.run(command, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=cwd)
             print(result.stdout)
             print(f"Execution completed successfully: {command}\n")
         except subprocess.CalledProcessError as e:
             # When the command returns an error
-            print(e.stderr)
-            print(f"An error occurred with the command: {command}\n\n")
+            print(f"Command '{command}' failed with return code {e.returncode}")
+            print(f"stdout:\n{e.stdout}")
+            print(f"stderr:\n{e.stderr}")
+            sys.exit(1)
         except Exception as e:
             # Other exceptions
-            print(e.stderr)
-            print(f"An unexpected error occurred: {command}\n\n")    
+            print(f"An unexpected error occurred while running command: {command}")
+            print(str(e))
+            sys.exit(1)
 
     def install_teams(self):
-        self.run_command(f"mkdir -p {self.base_dir}")
-        os.chdir(f"{self.base_dir}")
-        if not os.path.exists(f"{self.teams_dir}"):
-            self.run_command("git clone https://github.com/omusymcomp/robocup_teams.git teams")
-            os.chdir(self.teams_dir)
-            self.run_command("git lfs pull")
+        os.makedirs(self.base_dir, exist_ok=True)
+        if not os.path.exists(self.teams_dir):
+            self.run_command(f"git clone https://github.com/omusymcomp/robocup_teams.git {self.teams_dir}", cwd=self.base_dir)
+            self.run_command("git lfs pull", cwd=self.teams_dir)
         else:
-            print(f"{self.teams_dir} exists, skipping git clone")   
+            print(f"{self.teams_dir} exists, skipping git clone")
 
     def install_librcsc_for_helios_base(self):
-        # Compile librcsc
-        self.run_command(f"mkdir -p {self.base_team_dir}")
-        os.chdir(f"{self.base_team_dir}")
-        if not os.path.exists(self.base_team_dir+"/librcsc"):
-            self.run_command("git clone -b develop https://github.com/helios-base/librcsc.git")
+        # Compile librcsc for HELIOS-Base
+        os.makedirs(self.base_team_dir, exist_ok=True)
+        if not os.path.exists(os.path.join(self.base_team_dir, "librcsc")):
+            self.run_command("git clone -b develop https://github.com/helios-base/librcsc.git", cwd=self.base_team_dir)
+            # Obtain Git LFS objects
+            self.run_command("git lfs pull", cwd=os.path.join(self.base_team_dir, "librcsc"))
         else:
-            print(f"{self.base_team_dir}"+"/librcsc exists, skipping git clone")
-        os.chdir(f"./librcsc")
-        self.run_command(f"git clean -xfd")
-        self.run_command(f"git checkout 348f41e")
-        self.run_command(f"{self.configure_for_teams_dir}/librcsc/bootstrap")
-        self.run_command(f"{self.configure_for_teams_dir}/librcsc/configure --prefix={self.configure_for_teams_dir}")
-        self.run_command(self.make_command)
-        self.run_command(f"make install")  
-    
+            print(f"{self.base_team_dir}/librcsc exists, skipping git clone")
+        librcsc_dir = os.path.join(self.base_team_dir, "librcsc")
+        self.run_command("git clean -xfd", cwd=librcsc_dir)
+        self.run_command("git checkout 348f41e", cwd=librcsc_dir)
+        self.run_command("./bootstrap", cwd=librcsc_dir)
+        self.run_command(f"./configure --prefix={self.configure_for_teams_dir}", cwd=librcsc_dir)
+        self.run_command(self.make_command, cwd=librcsc_dir)
+        self.run_command("make install", cwd=librcsc_dir)
+
     def install_helios_base(self):
-        self.run_command(f"mkdir -p {self.base_team_dir}")
+        os.makedirs(self.base_team_dir, exist_ok=True)
         # Compile librcsc for HELIOS-Base
         self.install_librcsc_for_helios_base()
         # Compile HELIOS-Base
-        os.chdir(f"{self.base_team_dir}")
-        if not os.path.exists(self.base_team_dir+"/helios-base"):
-            self.run_command("git clone -b develop https://github.com/helios-base/helios-base.git")
+        if not os.path.exists(os.path.join(self.base_team_dir, "helios-base")):
+            self.run_command("git clone -b develop https://github.com/helios-base/helios-base.git", cwd=self.base_team_dir)
+            # Obtain Git LFS objects
+            self.run_command("git lfs pull", cwd=os.path.join(self.base_team_dir, "helios-base"))
         else:
-            print(f"{self.base_team_dir}"+"/helios-base exists, skipping git clone")
-        os.chdir(f"./helios-base")
-        self.run_command(f"{self.configure_for_teams_dir}/helios-base/bootstrap")
-        self.run_command(f"{self.configure_for_teams_dir}/helios-base/configure --with-librcsc={self.configure_for_teams_dir}")
-        self.run_command(self.make_command)
+            print(f"{self.base_team_dir}/helios-base exists, skipping git clone")
+        helios_base_dir = os.path.join(self.base_team_dir, "helios-base")
+        self.run_command("./bootstrap", cwd=helios_base_dir)
+        self.run_command(f"./configure --with-librcsc={self.configure_for_teams_dir}", cwd=helios_base_dir)
+        self.run_command(self.make_command, cwd=helios_base_dir)
+        self.run_command("make install", cwd=helios_base_dir)
 
     def replace_username(self):
         # Get the username of the executor
@@ -281,7 +292,7 @@ class SetupTeams:
                 for file in files:
                     # Open target files as text
                     file_path = os.path.join(root, file)
-                    
+
                     # Read file content
                     with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                         content = f.read()
@@ -294,13 +305,14 @@ class SetupTeams:
                         f.write(updated_content)
 
             print("Path replacement within files has been completed")
-        
+
         except Exception as e:
             # Other exceptions
             print(str(e))
-            print("An unexpected error occurred") 
+            print("An unexpected error occurred")
 
     def add_execution_permission(self):
+        # Add execution permission to scripts
         directory = self.user_teams_dir
         for root, dirs, files in os.walk(directory):
             for file in files:
@@ -308,6 +320,7 @@ class SetupTeams:
                 if file.endswith('.sh') or 'start' in file:
                     file_path = os.path.join(root, file)
                     self.run_command(f"chmod +x {file_path}")
+
 
 if __name__ == "__main__":
     main()
