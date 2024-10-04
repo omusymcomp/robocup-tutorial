@@ -21,7 +21,7 @@ def main():
     args = parser.parse_args()
 
     setup_tools = SetupTools(args)
-    
+
     setup_tools.upgrade_packages()  
     setup_tools.install_essential_packages()  
     setup_tools.add_environment_variables()
@@ -40,6 +40,7 @@ def main():
 
     if args.install_target == "teams":
         setup_teams.install_teams()
+        setup_teams.replace_username()
     elif args.install_target == "all":
         setup_tools.install_librcsc()
         setup_tools.install_rcssserver()
