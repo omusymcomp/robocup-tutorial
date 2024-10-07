@@ -51,6 +51,9 @@ def main():
         setup_tools.install_rcssmonitor()
         setup_tools.install_fedit2()
         setup_tools.install_loganalyzer3()
+    elif args.install_target == "teams":
+        setup_teams.install_teams()
+        setup_teams.replace_username()
     else:
         # Call the method corresponding to the specified install target
         called_method = getattr(setup_tools, f"install_{args.install_target}")
@@ -106,7 +109,7 @@ class SetupTools:
         self.run_command("sudo apt-get install -y flex bison libboost-all-dev")
         self.run_command("sudo apt-get install -y qtbase5-dev qt5-qmake libfontconfig1-dev libaudio-dev")
         self.run_command("sudo apt-get install -y libxt-dev libglib2.0-dev libxi-dev libxrender-dev")
-        self.run_command("sudo apt-get install -y git-lfs")
+        self.run_command("sudo apt-get install -y git-lfs wget")
         self.run_command("git lfs install")
 
     def add_environment_variables(self):
@@ -248,10 +251,17 @@ class SetupTeams:
     def install_teams(self):
         os.makedirs(self.base_dir, exist_ok=True)
         if not os.path.exists(self.teams_dir):
-            self.run_command(f"git clone https://github.com/omusymcomp/robocup_teams.git {self.teams_dir}", cwd=self.base_dir)
-            self.run_command("git lfs pull", cwd=self.teams_dir)
+            # Download all team files from the specified URL
+            download_url = "https://archive.robocup.info/Soccer/Simulation/2D/binaries/RoboCup/2023/Day4/"
+            # Use wget to recursively download all files
+            self.run_command(f"wget -r -np -nH --cut-dirs=7 -R 'index.html*' {download_url}", cwd=self.base_dir)
+            # Move downloaded files to teams_dir
+            if os.path.exists(os.path.join(self.base_dir, "Day4")):
+                self.run_command(f"mv {os.path.join(self.base_dir, 'Day4')} {self.teams_dir}")
+            else:
+                print("Download directory not found, please check the download URL and wget options.")
         else:
-            print(f"{self.teams_dir} exists, skipping git clone")
+            print(f"{self.teams_dir} exists, skipping download")
 
     def install_librcsc_for_helios_base(self):
         # Compile librcsc for HELIOS-Base
