@@ -1,4 +1,4 @@
-# RoboCupSoccerSetup
+# rcsssetup
 
 This tool automates the process of setting up the RoboCup Soccer 2D League environment, installing teams, and configuring dependencies. With a single command, you can get your RoboCup simulation up and running quickly.
 
@@ -32,11 +32,9 @@ This tool automates the process of setting up the RoboCup Soccer 2D League envir
     ```bash
     python3 setup.py 
     ```
-## Command-Line Options
+### Command-Line Options
 
 This tool provides several command-line options to control the setup and installation process.
-
-### Basic Options
 
 - `-d` or `--base_dir`  
   - Description: Specify the base directory for setting up the environment.  
@@ -51,6 +49,7 @@ This tool provides several command-line options to control the setup and install
     - `all`: Installs all tools and teams
     - `minisetup`: Installs only the minimal setup required to run the simulation
     - `tools`: Installs only the tools
+    - `teams`: Installs only the teams
     - `librcsc`: Installs `librcsc`
     - `rcssserver`: Installs `rcssserver`
     - `soccerwindow2`: Installs `soccerwindow2`
@@ -87,16 +86,6 @@ This tool provides several command-line options to control the setup and install
     ./setup.sh --add_environment_variable
     ```
 
-## Usage
-
-### Start the server
-
-After installation, you can start the RoboCup 2D server with the following command:
-
-```bash
-rcssserver
-```
-
 ## Directory Tree
 <pre>
 $HOME
@@ -110,12 +99,12 @@ $HOME
      │     └ fedit2
      │
      └ teams  
-           ├ rc2023 
-           │      ├ HELIOS2023
+           ├ rc2022 
+           │      ├ helios2022
            │      ├ ...
            │      └ ...
-           ├ rc2024
-           │      ├ HELIOS2024
+           ├ rc2023
+           │      ├ HELIOS2023
            │      ├ ...
            │      └ ...
            └ base_team
@@ -125,20 +114,67 @@ $HOME
 
 ## Start a match
 
-To start a match between the installed teams, uset the following command:
+To start a match between the installed rc2023 teams, uset the following command:
 ```bash
-./auto_match.py teamA teamB
+python3 auto_match.py -l left_team -r right team
 ```
 - example
 ```bash
-./run_match.py HELIOS helios-base
+python3 auto_match.py -l HELIOS2023 -r CYRUS
+```
+
+### Command-Line Options
+
+This script provides several command-line options to control match settings:
+
+- `-d` or `--base_dir`
+  - Description: Specify the base directory for the environment.
+  - Default: `$HOME/rcss`
+  - Example:
+    ```bash
+    python3 -d /path/to/your/base/directory
+    ```
+
+- `-l` or `--left_team_name`
+  - Description: Specify the name of the team to play on the left side. 
+  - Default: `HELIOS2023`
+- `-r` or `--right_team_name`
+  - Description: Specify the name of the team to play on the right side. 
+  - Default: `CYRUS`
+  - Example:  
+    ```bash
+    python3 auto_match.py -l HELIOS2023 -r CYRUS
+    ```
+
+- `-n` or `-match_number`
+  - Description: Enable synchronized mode. When this flag is set, the server runs in synchronous mode.
+  - Default: `Disabled`
+  - Example:
+    ```bash
+    python3 auto_match.py -n 5
+    ```
+
+- `is_synch_mode`
+  - Description: Specify the number of matches to be played.
+  - Default: `3`
+  - Example:
+    ```bash
+    python3 auto_match.py --is_synch_mode
+    ```
+
+### Mathch Logs
+
+Auto match logs are saved in the directory:
+
+```bash
+$BASE_DIR/log_analysis/log/YYYYMMDDHHMMSS/
 ```
 
 ## Envirionment Variables
 
 you can configure the following environment variables foe advance setups:
 - `TEAM_DIR`: Directory where teams are stored.
-- `MATCH_LOG_DIR`: Directory where match logs are saved.
+- `MATCH_LOG_DIR`: Directory where auto match logs are saved.
 ```bash
 export TEAM_DIR=~/robocup/teams
 export MATCH_LOG_DIR=~/robocup/logs
