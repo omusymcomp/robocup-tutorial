@@ -31,7 +31,7 @@ class AutoMatch:
         "CYRUS": "startAll",
         "FRA-UNIted": "startlocal.sh",
         "Hermes2D": "start.sh",
-        "R3CESBU": "start.sh",
+        "R3CESBU": "startAll",
         "YuShan2023": "localStartAll",
         "Damavand": "localStartAll",
         "HELIOS2023": "start.sh",
