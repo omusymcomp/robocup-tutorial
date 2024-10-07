@@ -109,7 +109,7 @@ class SetupTools:
         self.run_command("sudo apt-get install -y flex bison libboost-all-dev")
         self.run_command("sudo apt-get install -y qtbase5-dev qt5-qmake libfontconfig1-dev libaudio-dev")
         self.run_command("sudo apt-get install -y libxt-dev libglib2.0-dev libxi-dev libxrender-dev")
-        self.run_command("sudo apt-get install -y git-lfs wget")
+        self.run_command("sudo apt-get install -y git-lfs wget xz-utils findutils")
         self.run_command("git lfs install")
 
     def add_environment_variables(self):
@@ -256,6 +256,10 @@ class SetupTeams:
             download_url = "https://archive.robocup.info/Soccer/Simulation/2D/binaries/RoboCup/2023/Day4/"
             # Use wget to recursively download all files
             self.run_command(f"wget -r -np -nH --cut-dirs=7 -R 'index.html*' {download_url}", cwd=self.rc2023_dir)
+            self.run_command(f"find {self.teams_dir} -name '*.tar.gz' -exec tar -xzvf '{{}}' -C {self.rc2023_dir} ';'", cwd=self.rc2023_dir)
+            self.run_command(f"find {self.teams_dir} -name '*.tar.xz' -exec tar -xJvf '{{}}' -C {self.rc2023_dir} ';'", cwd=self.rc2023_dir)
+            # self.run_command(f"find {self.teams_dir} -name '*.tar.gz' -delete", cwd=self.rc2023_dir)
+            # self.run_command(f"find {self.teams_dir} -name '*.tar.xz' -delete", cwd=self.rc2023_dir)
         else:
             print(f"{self.teams_dir} exists, skipping download")
 
