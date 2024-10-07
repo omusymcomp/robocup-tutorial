@@ -250,7 +250,7 @@ class SetupTeams:
             sys.exit(1)
 
     def install_teams(self):
-        os.makedirs(self.rc, exist_ok=True)
+        os.makedirs(self.rc2023_dir, exist_ok=True)
         if not os.path.exists(os.path.join(self.rc2023_dir, "HELIOS2023")):
             # Download all team files from the specified URL
             download_url = "https://archive.robocup.info/Soccer/Simulation/2D/binaries/RoboCup/2023/Day4/"
