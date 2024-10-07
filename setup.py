@@ -213,6 +213,7 @@ class SetupTeams:
         self.teams_dir = os.path.join(self.base_dir, "teams")
         self.user_teams_dir = f"/home/{username}/rcss/teams"
         self.base_team_dir = os.path.join(self.base_dir, "teams", "base_team")
+        self.rc2023_dir = os.path.join(self.base_dir, "teams", "rc2023")
         self.configure_for_teams_dir = self.base_team_dir
         self.jobs = args.jobs
         self.make_command = "make"
@@ -249,17 +250,12 @@ class SetupTeams:
             sys.exit(1)
 
     def install_teams(self):
-        os.makedirs(self.base_dir, exist_ok=True)
-        if not os.path.exists(self.teams_dir):
+        os.makedirs(self.rc, exist_ok=True)
+        if not os.path.exists(os.path.join(self.rc2023_dir, "HELIOS2023")):
             # Download all team files from the specified URL
             download_url = "https://archive.robocup.info/Soccer/Simulation/2D/binaries/RoboCup/2023/Day4/"
             # Use wget to recursively download all files
             self.run_command(f"wget -r -np -nH --cut-dirs=7 -R 'index.html*' {download_url}", cwd=self.base_dir)
-            # Move downloaded files to teams_dir
-            if os.path.exists(os.path.join(self.base_dir, "Day4")):
-                self.run_command(f"mv {os.path.join(self.base_dir, 'Day4')} {self.teams_dir}")
-            else:
-                print("Download directory not found, please check the download URL and wget options.")
         else:
             print(f"{self.teams_dir} exists, skipping download")
 
