@@ -258,8 +258,8 @@ class SetupTeams:
             self.run_command(f"wget -r -np -nH --cut-dirs=7 -R 'index.html*' {download_url}", cwd=self.rc2023_dir)
             self.run_command(f"find {self.teams_dir} -name '*.tar.gz' -exec tar -xzvf '{{}}' -C {self.rc2023_dir} ';'", cwd=self.rc2023_dir)
             self.run_command(f"find {self.teams_dir} -name '*.tar.xz' -exec tar -xJvf '{{}}' -C {self.rc2023_dir} ';'", cwd=self.rc2023_dir)
-            # self.run_command(f"find {self.teams_dir} -name '*.tar.gz' -delete", cwd=self.rc2023_dir)
-            # self.run_command(f"find {self.teams_dir} -name '*.tar.xz' -delete", cwd=self.rc2023_dir)
+            self.run_command(f"find {self.teams_dir} -name '*.tar.gz' -delete", cwd=self.rc2023_dir)
+            self.run_command(f"find {self.teams_dir} -name '*.tar.xz' -delete", cwd=self.rc2023_dir)
         else:
             print(f"{self.teams_dir} exists, skipping download")
 
