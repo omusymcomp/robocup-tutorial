@@ -5,17 +5,16 @@ import os
 from datetime import datetime
 import getpass
 
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--base_dir", dest="base_dir", default=os.path.expandvars("$HOME/rcss"), 
                         help="Specify the base directory for environment setup")
     parser.add_argument("-l", "--left_team_name", dest="left_team_name", default="CYRUS", 
-                        choices=["custom", "HELIOS2023", "helios-base", "yushan2023", "CYRUS",
+                        choices=["custom", "HELIOS2023", "helios-base", "YuShan2023", "CYRUS",
                                  "EMPEROR", "Hermes2D", "Oxsy", "RoboCIn", "Damavand", "FRA-UNIted",
                                  "Hades2D", "ITAndroids", "The8", "R3CESBU", "robo2d"], help="Specify the left team name")
     parser.add_argument("-r", "--right_team_name", dest="right_team_name", default="HELIOS2023", 
-                        choices=["custom", "HELIOS2023", "helios-base", "yushan2023", "CYRUS",
+                        choices=["custom", "HELIOS2023", "helios-base", "YuShan2023", "CYRUS",
                                  "EMPEROR", "Hermes2D", "Oxsy", "RoboCIn", "Damavand", "FRA-UNIted",
                                  "Hades2D", "ITAndroids", "The8", "R3CESBU", "robo2d"], help="Specify the right team name")
     parser.add_argument("-n", "--match_number", dest="match_number", default=3, type=int, 
@@ -26,8 +25,25 @@ def main():
     auto_match = AutoMatch(args)
     auto_match.execute_matches(args)
 
-
 class AutoMatch:
+    # チームごとの起動スクリプトを定義
+    team_start_scripts = {
+        "CYRUS": "startAll",
+        "FRA-UNIted": "startlocal.sh",
+        "Hermes2D": "start.sh",
+        "R3CESBU": "start.sh",
+        "YuShan2023": "localStartAll",
+        "Damavand": "localStartAll",
+        "HELIOS2023": "start.sh",
+        "ITAndroids": "start.sh",
+        "RoboCIn": "startAll",
+        "robo2d": "localStartAll",
+        "EMPEROR": "start.sh",
+        "Hades2D": "localStartAll",
+        "Oxsy": "startlocal",
+        "The8": "startAll"
+    }
+
     def __init__(self, args):
         now = datetime.now()
         self.formatted_date_time = now.strftime("%Y%m%d%H%M%S")
@@ -36,30 +52,33 @@ class AutoMatch:
         self.left_team_path_list = []
         self.right_team_path_list = []
         self.output_text = None
-        
+
         if args.left_team_name == "custom":
             self.left_team_path_list = self.get_custom_team_path_list()
         else:
-            self.left_team_path_list.append(self.get_team_path(args.base_dir, args.left_team_name))
+            self.left_team_path_list.append(self.get_team_path(args.left_team_name))
 
         if args.right_team_name == "custom":
             self.right_team_path_list = self.get_custom_team_path_list()
         else:
-            self.right_team_path_list.append(self.get_team_path(args.base_dir, args.right_team_name))
+            self.right_team_path_list.append(self.get_team_path(args.right_team_name))
 
     def get_custom_team_path_list(self):
         custom_dir = self.change_home_path(f"{self.team_binary_dir}/custom")
         team_dirs = [name for name in os.listdir(custom_dir)]
         path_list = []
 
-        for path in team_dirs:
-            path_list.append(f"{custom_dir}/{path}/start.sh")
+        for team_name in team_dirs:
+            script_name = self.team_start_scripts.get(team_name, "start.sh")
+            path_list.append(f"{custom_dir}/{team_name}/{script_name}")
 
         return path_list
-    
-    def get_team_path(self, base_dir, team_name):
+
+    def get_team_path(self, team_name):
         team_path_base = f"{self.team_binary_dir}/{team_name}"
-        return f"{team_path_base}/start.sh"    
+        # チームに対応する起動スクリプトを取得
+        script_name = self.team_start_scripts.get(team_name, "start.sh")
+        return f"{team_path_base}/{script_name}"    
 
     def run_command(self, command):
         try:
@@ -70,7 +89,7 @@ class AutoMatch:
             print(e.stderr)
             print(f"Error occurred with the command: {command}\n\n")
         except Exception as e:
-            print(e.stderr)
+            print(e)
             print(f"An unexpected error occurred: {command}\n\n")
 
     def execute_matches(self, args):
@@ -78,7 +97,7 @@ class AutoMatch:
             for right_team_path in self.right_team_path_list:
                 for counter in range(args.match_number):
                     execute_command = f"{args.base_dir}/tools/bin/rcssserver server::auto_mode = 1 " \
-                                      f"server::synch_mode = {args.is_synch_mode} " \
+                                      f"server::synch_mode = {int(args.is_synch_mode)} " \
                                       f"server::team_l_start = {left_team_path} " \
                                       f"server::team_r_start = {right_team_path} " \
                                       f"server::kick_off_wait = 50 " \
@@ -100,20 +119,11 @@ class AutoMatch:
 
     def change_home_path(self, target):
         return target.replace("$HOME", f"/home/{getpass.getuser()}") if "$HOME" in target else target
-    
+
     def get_team_name(self, left_team_path, right_team_path):
-        if left_team_path.split("/")[-2] == "src":
-            left_team_name = left_team_path.split("/")[-3]
-        else:
-            left_team_name = left_team_path.split("/")[-2]
-
-        if right_team_path.split("/")[-2] == "src":
-            right_team_name = right_team_path.split("/")[-3]
-        else:
-            right_team_name = right_team_path.split("/")[-2]
-
+        left_team_name = os.path.basename(os.path.dirname(left_team_path))
+        right_team_name = os.path.basename(os.path.dirname(right_team_path))
         return left_team_name, right_team_name
-        
 
 if __name__ == "__main__":
     main()
