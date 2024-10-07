@@ -255,7 +255,7 @@ class SetupTeams:
             # Download all team files from the specified URL
             download_url = "https://archive.robocup.info/Soccer/Simulation/2D/binaries/RoboCup/2023/Day4/"
             # Use wget to recursively download all files
-            self.run_command(f"wget -r -np -nH --cut-dirs=7 -R 'index.html*' {download_url}", cwd=self.base_dir)
+            self.run_command(f"wget -r -np -nH --cut-dirs=7 -R 'index.html*' {download_url}", cwd=self.rc2023_dir)
         else:
             print(f"{self.teams_dir} exists, skipping download")
 
