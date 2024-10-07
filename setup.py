@@ -374,7 +374,7 @@ class SetupTeams:
         for root, dirs, files in os.walk(directory):
             for file in files:
                 # Add execution permission based on script file extension or specific filenames
-                if file.endswith('.sh') or any(substring in file for substring in ['start', 'localstartAll', 'startAll']):
+                if file.endswith('.sh') or any(substring in file for substring in ['start', 'localStartAll', 'startAll', 'startlocal']):
                     file_path = os.path.join(root, file)
                     self.run_command(f"chmod +x {file_path}")
 
