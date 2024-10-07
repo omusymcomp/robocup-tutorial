@@ -30,7 +30,7 @@ class AutoMatch:
     team_start_scripts = {
         "CYRUS": "startAll",
         "FRA-UNIted": "startlocal.sh",
-        "Hermes2D": "start.sh",
+        # "Hermes2D": "start.sh",
         "R3CESBU": "startAll",
         "YuShan2023": "localStartAll",
         "Damavand": "localStartAll",
@@ -38,7 +38,7 @@ class AutoMatch:
         "ITAndroids": "start.sh",
         "RoboCIn": "startAll",
         "robo2d": "localStartAll",
-        "EMPEROR": "start.sh",
+        # "EMPEROR": "start.sh",
         "Hades2D": "localStartAll",
         "Oxsy": "startlocal",
         "The8": "startAll"
@@ -48,7 +48,7 @@ class AutoMatch:
         now = datetime.now()
         self.formatted_date_time = now.strftime("%Y%m%d%H%M%S")
         self.log_dir = args.base_dir + "/log_analysis/log/" + self.formatted_date_time
-        self.team_binary_dir = args.base_dir + "/teams/rc2023"  # rc2023を追加
+        self.team_binary_dir = args.base_dir + "/teams/rc2023"
         self.left_team_path_list = []
         self.right_team_path_list = []
         self.output_text = None
