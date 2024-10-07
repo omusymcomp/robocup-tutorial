@@ -256,7 +256,7 @@ class SetupTeams:
             # Download all team files from the specified URL
             download_url = "https://archive.robocup.info/Soccer/Simulation/2D/binaries/RoboCup/2023/Day4/"
             # Use wget to recursively download all files
-            self.run_command(f"wget -r -np -nH --cut-dirs=7 -R 'index.html*' {download_url}", cwd=self.rc2023_dir)
+            self.run_command(f"wget -r -np -nH --cut-dirs=7 -R 'index.html*, robots.txt' {download_url}", cwd=self.rc2023_dir)
             self.run_command(f"find {self.teams_dir} -name '*.tar.gz' -exec tar -xzvf '{{}}' -C {self.rc2023_dir} ';'", cwd=self.rc2023_dir)
             self.run_command(f"find {self.teams_dir} -name '*.tar.xz' -exec tar -xJvf '{{}}' -C {self.rc2023_dir} ';'", cwd=self.rc2023_dir)
             self.run_command(f"find {self.teams_dir} -name '*.tar.gz' -delete", cwd=self.rc2023_dir)
@@ -269,7 +269,7 @@ class SetupTeams:
             # Download all team files from the specified URL
             download_url = "https://archive.robocup.info/Soccer/Simulation/2D/binaries/RoboCup/2022/Day4/"
             # Use wget to recursively download all files
-            self.run_command(f"wget -r -np -nH --cut-dirs=7 -R 'index.html*' {download_url}", cwd=self.rc2022_dir)
+            self.run_command(f"wget -r -np -nH --cut-dirs=7 -R 'index.html*, robots.txt' {download_url}", cwd=self.rc2022_dir)
             self.run_command(f"find {self.teams_dir} -name '*.tar.gz' -exec tar -xzvf '{{}}' -C {self.rc2022_dir} ';'", cwd=self.rc2022_dir)
             self.run_command(f"find {self.teams_dir} -name '*.tar.xz' -exec tar -xJvf '{{}}' -C {self.rc2022_dir} ';'", cwd=self.rc2022_dir)
             self.run_command(f"find {self.teams_dir} -name '*.tar.gz' -delete", cwd=self.rc2022_dir)
