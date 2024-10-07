@@ -10,7 +10,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--base_dir", dest="base_dir", default=os.path.expandvars("$HOME/rcss"), 
                         help="Specify the base directory for environment setup")
-    parser.add_argument("-l", "--left_team_name", dest="left_team_name", default="helios-base", 
+    parser.add_argument("-l", "--left_team_name", dest="left_team_name", default="CYRUS", 
                         choices=["custom", "HELIOS2023", "helios-base", "yushan2023", "CYRUS",
                                  "EMPEROR", "Hermes2D", "Oxsy", "RoboCIn", "Damavand", "FRA-UNIted",
                                  "Hades2D", "ITAndorids", "The8"], help="Specify the left team name")

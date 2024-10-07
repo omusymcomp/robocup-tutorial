@@ -1,4 +1,4 @@
-#!/sh
+#!/bin/sh
 BASE_DIR=$HOME/rcss/teams/rc2023/YuShan2023/
 /home/username/rcss/teams/rc2023/YuShan2023/start 127.0.0.1 ${BASE_DIR} 1 &
 sleep 2
