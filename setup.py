@@ -53,7 +53,7 @@ def main():
         setup_tools.install_loganalyzer3()
     elif args.install_target == "teams":
         setup_teams.install_teams()
-        # setup_teams.replace_username()
+        setup_teams.replace_username()
     else:
         # Call the method corresponding to the specified install target
         called_method = getattr(setup_tools, f"install_{args.install_target}")
