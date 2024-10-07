@@ -214,6 +214,7 @@ class SetupTeams:
         self.user_teams_dir = f"/home/{username}/rcss/teams"
         self.base_team_dir = os.path.join(self.base_dir, "teams", "base_team")
         self.rc2023_dir = os.path.join(self.base_dir, "teams", "rc2023")
+        self.rc2022_dir = os.path.join(self.base_dir, "teams", "rc2022")
         self.configure_for_teams_dir = self.base_team_dir
         self.jobs = args.jobs
         self.make_command = "make"
@@ -261,7 +262,20 @@ class SetupTeams:
             self.run_command(f"find {self.teams_dir} -name '*.tar.gz' -delete", cwd=self.rc2023_dir)
             self.run_command(f"find {self.teams_dir} -name '*.tar.xz' -delete", cwd=self.rc2023_dir)
         else:
-            print(f"{self.teams_dir} exists, skipping download")
+            print(f"{self.rc2023_dir} exists, skipping download")
+        
+        os.makedirs(self.rc2022_dir, exist_ok=True)
+        if not os.path.exists(os.path.join(self.rc2022_dir, "HELIOS2022")):
+            # Download all team files from the specified URL
+            download_url = "https://archive.robocup.info/Soccer/Simulation/2D/binaries/RoboCup/2022/Day4/"
+            # Use wget to recursively download all files
+            self.run_command(f"wget -r -np -nH --cut-dirs=7 -R 'index.html*' {download_url}", cwd=self.rc2022_dir)
+            self.run_command(f"find {self.teams_dir} -name '*.tar.gz' -exec tar -xzvf '{{}}' -C {self.rc2022_dir} ';'", cwd=self.rc2022_dir)
+            self.run_command(f"find {self.teams_dir} -name '*.tar.xz' -exec tar -xJvf '{{}}' -C {self.rc2022_dir} ';'", cwd=self.rc2022_dir)
+            self.run_command(f"find {self.teams_dir} -name '*.tar.gz' -delete", cwd=self.rc2022_dir)
+            self.run_command(f"find {self.teams_dir} -name '*.tar.xz' -delete", cwd=self.rc2022_dir)
+        else:
+            print(f"{self.rc2022_dir} exists, skipping download")
 
     def install_librcsc_for_helios_base(self):
         # Compile librcsc for HELIOS-Base
