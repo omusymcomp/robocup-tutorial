@@ -54,6 +54,7 @@ def main():
     elif args.install_target == "teams":
         setup_teams.install_teams()
         setup_teams.replace_username()
+        setup_teams.add_execution_permission()
     else:
         # Call the method corresponding to the specified install target
         called_method = getattr(setup_tools, f"install_{args.install_target}")
