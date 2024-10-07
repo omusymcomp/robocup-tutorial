@@ -53,7 +53,7 @@ def main():
         setup_tools.install_loganalyzer3()
     elif args.install_target == "teams":
         setup_teams.install_teams()
-        setup_teams.replace_username()
+        # setup_teams.replace_username()
     else:
         # Call the method corresponding to the specified install target
         called_method = getattr(setup_tools, f"install_{args.install_target}")
@@ -211,10 +211,11 @@ class SetupTeams:
         username = os.getlogin()
         self.base_dir = args.base_dir
         self.teams_dir = os.path.join(self.base_dir, "teams")
-        self.user_teams_dir = f"/home/{username}/rcss/teams"
+        self.user_teams_dir = os.path.join(self.base_dir, "teams")
         self.base_team_dir = os.path.join(self.base_dir, "teams", "base_team")
         self.rc2023_dir = os.path.join(self.base_dir, "teams", "rc2023")
         self.rc2022_dir = os.path.join(self.base_dir, "teams", "rc2022")
+        self.rcsssetup_teams_dir = f"/home/{username}/rcsssetup/teams"
         self.configure_for_teams_dir = self.base_team_dir
         self.jobs = args.jobs
         self.make_command = "make"
@@ -261,11 +262,12 @@ class SetupTeams:
             self.run_command(f"find {self.teams_dir} -name '*.tar.xz' -exec tar -xJvf '{{}}' -C {self.rc2023_dir} ';'", cwd=self.rc2023_dir)
             self.run_command(f"find {self.teams_dir} -name '*.tar.gz' -delete", cwd=self.rc2023_dir)
             self.run_command(f"find {self.teams_dir} -name '*.tar.xz' -delete", cwd=self.rc2023_dir)
+            self.run_command(f"cp -r {self.rcsssetup_teams_dir}/. {self.teams_dir}/")
         else:
             print(f"{self.rc2023_dir} exists, skipping download")
         
         os.makedirs(self.rc2022_dir, exist_ok=True)
-        if not os.path.exists(os.path.join(self.rc2022_dir, "HELIOS2022")):
+        if not os.path.exists(os.path.join(self.rc2022_dir, "helios2022")):
             # Download all team files from the specified URL
             download_url = "https://archive.robocup.info/Soccer/Simulation/2D/binaries/RoboCup/2022/Day4/"
             # Use wget to recursively download all files
