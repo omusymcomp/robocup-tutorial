@@ -13,7 +13,6 @@ This tool automates the process of setting up the RoboCup Soccer 2D League envir
 ## Requirements
 
 - **Git**: Ensure Git is installed on your system.
-- **Docker**: (Optional) If you plan to use Docker to run simulations.
 - **Python 3.x**: The tool uses Python scripts for automation.
 
 ## Installation
@@ -27,7 +26,11 @@ This tool automates the process of setting up the RoboCup Soccer 2D League envir
     ```bash
     sudo apt-get install -y python3 python3-pip
     ```
-3. **Set up the environment**:
+3. **Install git-lfs**
+    ```bash
+    sudo apt-get install git-lfs
+    ```
+4. **Set up the environment**:
     Use the script to install everything necessary to run RoboCup Soccer 2D League:
     ```bash
     python3 setup.py 
