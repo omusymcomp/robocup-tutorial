@@ -19,7 +19,7 @@ This tool automates the process of setting up the RoboCup Soccer 2D League envir
 
 1. **Clone this repository**:
     ```bash
-    git clone https://github.com/your-username/rcsssetup.git
+    git clone https://github.com/omusymcomp/rcsssetup.git
     cd rcsssetup
     ```
 2. **Install Python 3 and pip**
