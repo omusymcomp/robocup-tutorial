@@ -9,7 +9,7 @@ def main():
     subprocess.run("git lfs install --skip-repo", check=True, shell=True)
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--base_dir", dest="base_dir", default=os.path.expandvars("$HOME/rcss"), help="Specify the base directory for environment setup")
-    parser.add_argument("-t", "--install_target", dest="install_target", default="minisetup",
+    parser.add_argument("-t", "--install_target", dest="install_target", default="all",
                         choices=["all", "minisetup", "tools", "librcsc", "rcssserver", "soccerwindow2",
                                  "rcssmonitor", "fedit2", "helios_base", "helios", "loganalyzer3", "teams"],
                         help="Specify the installation target. 'all' installs everything, 'minisetup' installs the minimal setup required for execution, and specific tools or teams are installed if specified.")
