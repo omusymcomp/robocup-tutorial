@@ -114,11 +114,35 @@ class SetupTools:
         self.run_command("git lfs install")
 
     def add_environment_variables(self):
-        # Add environment variables
-        # Note that this appends with each function call
-        self.run_command("echo 'export LD_LIBRARY_PATH=$HOME/rcss/tools/lib:$LD_LIBRARY_PATH' >> ~/.bashrc")
-        self.run_command("echo 'export PATH=$HOME/rcss/tools/bin:$PATH' >> ~/.profile")
-        self.run_command("echo 'export RCSSMONITOR=sswindow2' >> ~/.bashrc")
+        # Paths to the shell configuration files
+        bashrc_path = os.path.expanduser("~/.bashrc")
+        profile_path = os.path.expanduser("~/.profile")
+
+        # Environment variable lines to add
+        ld_library_line = 'export LD_LIBRARY_PATH=$HOME/rcss/tools/lib:$LD_LIBRARY_PATH'
+        path_line = 'export PATH=$HOME/rcss/tools/bin:$PATH'
+        rcssmonitor_line = 'export RCSSMONITOR=sswindow2'
+
+        # Function to append a line if it's not already present
+        def append_if_not_present(file_path, line):
+            try:
+                with open(file_path, 'r') as f:
+                    content = f.read()
+                if line not in content:
+                    with open(file_path, 'a') as f:
+                        f.write('\n' + line + '\n')
+                    print(f"Added line to {file_path}: {line}")
+                else:
+                    print(f"Line already exists in {file_path}: {line}")
+            except Exception as e:
+                print(f"Error while updating {file_path}: {e}")
+                sys.exit(1)
+
+        # Add the environment variables
+        append_if_not_present(bashrc_path, ld_library_line)
+        append_if_not_present(bashrc_path, path_line)
+        append_if_not_present(bashrc_path, rcssmonitor_line)
+        append_if_not_present(profile_path, path_line)
 
     def install_librcsc(self):
         # Compile librcsc
