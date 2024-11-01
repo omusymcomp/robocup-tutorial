@@ -41,7 +41,7 @@ This tool provides several command-line options to control the setup and install
   - Default: `$HOME/rcss`  
   - Example:  
     ```bash
-    ./setup.sh -d /path/to/your/directory
+    python3 setup.py -d /path/to/your/directory
     ```
 
 - `-t` or `--install_target`  
@@ -62,29 +62,29 @@ This tool provides several command-line options to control the setup and install
 
   - Example:  
     ```bash
-    ./setup.sh -t all
-    ./setup.sh -t librcsc
+    python3 setup.py -t all
+    python3 setup.py -t librcsc
     ```
 
 - `--upgrade_packages`  
   - Description: Upgrade packages before compilation.  
   - Example:  
     ```bash
-    ./setup.sh --upgrade_packages
+    python3 setup.py --upgrade_packages
     ```
 
 - `--is_installation_of_essential_packages`  
   - Description: Specify if you want to install essential packages before compilation.  
   - Example:  
     ```bash
-    ./setup.sh --is_installation_of_essential_packages
+    python3 setup.py --is_installation_of_essential_packages
     ```
 
 - `--add_environment_variable`  
   - Description: Add environment variables. This is required during the initial setup.  
   - Example:  
     ```bash
-    ./setup.sh --add_environment_variable
+    python3 setup.py --add_environment_variable
     ```
 
 ## Directory Tree
@@ -113,7 +113,7 @@ $HOME
                   └ helios-base
 </pre>
 
-## Start a match
+## Start a auto match
 
 To start a match between the installed rc2023 teams, uset the following command:
 ```bash
@@ -133,7 +133,7 @@ This script provides several command-line options to control match settings:
   - Default: `$HOME/rcss`
   - Example:
     ```bash
-    python3 -d /path/to/your/base/directory
+    python3 auto_match.py -d /path/to/your/base/directory
     ```
 
 - `-l` or `--left_team_name`
@@ -171,7 +171,7 @@ Auto match logs are saved in the directory:
 $BASE_DIR/log_analysis/log/YYYYMMDDHHMMSS/
 ```
 
-## Envirionment Variables
+### Envirionment Variables
 
 you can configure the following environment variables foe advance setups:
 - `TEAM_DIR`: Directory where teams are stored.
@@ -180,6 +180,41 @@ you can configure the following environment variables foe advance setups:
 export TEAM_DIR=~/robocup/teams
 export MATCH_LOG_DIR=~/robocup/logs
 ```
+
+## Start a match manually
+
+To start a match manually:
+ 
+1. Start the server
+
+    Launch the rcssserver with the following command:
+    ```bash
+    rcssserver
+    ```
+
+2. Launch the monitor
+
+    Open the monitor to view the match visually. Run:
+    ```bash
+    soccerwindow2
+    ```
+    Alternatively, if installed, use sswindow2 to start the monitor with standard settings:
+    ```bash
+    sswindow2
+    ```
+
+3. Start the teams
+
+    In separate terminal windows, navigate to the directory where each team's executable or startup script is located. Launch each team by executing:
+    ```bash
+    ./team_start_script
+    ```
+    (Replace`team_start_script`with the actual script name for each team.)
+
+4. Start the match
+    With the server and monitor running and both teams connected, go to the monitor window. Click anywhere on the monitor screen to display the "Kick Off" button. Then, either click this button or press Control + K to start the match. The game will commence in real time on the monitor.
+
+By following these steps, you can manually initiate and observe a match in the RoboCup Soccer Simulation 2D League.
 
 ## Libraries and helios-base
 
