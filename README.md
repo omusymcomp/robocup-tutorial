@@ -117,11 +117,7 @@ $HOME
 
 To start a match between the installed rc2023 teams, uset the following command:
 ```bash
-python3 auto_match.py -l left_team -r right team
-```
-- example
-```bash
-python3 auto_match.py -l HELIOS2023 -r CYRUS
+python3 auto_match.py
 ```
 
 ### Command-Line Options
