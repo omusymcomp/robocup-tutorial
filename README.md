@@ -87,6 +87,14 @@ This tool provides several command-line options to control the setup and install
     python3 setup.py --add_environment_variable
     ```
 
+- `-j` or `--jobs`
+  - Description: Specify the number of jobs to run simultaneously during compilation. This option  directly sets the make -j parameter, allowing for faster compilation by using multiple CPU cores.
+
+  - Example:
+    ```bash
+    python3 setup.py -j 4
+    ``` 
+    
 ## Directory Tree
 <pre>
 $HOME
