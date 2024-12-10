@@ -152,16 +152,16 @@ This script provides several command-line options to control match settings:
     ```
 
 - `-n` or `-match_number`
-  - Description: Enable synchronized mode. When this flag is set, the server runs in synchronous mode.
-  - Default: `Disabled`
+  - Description: Specify the number of matches to be played.
+  - Default: `3`
   - Example:
     ```bash
     python3 auto_match.py -n 5
     ```
 
 - `is_synch_mode`
-  - Description: Specify the number of matches to be played.
-  - Default: `3`
+  - Description: Enable synchronized mode. When this flag is set, the server runs in synchronous mode.
+  - Default: `Disabled`
   - Example:
     ```bash
     python3 auto_match.py --is_synch_mode
