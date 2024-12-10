@@ -47,8 +47,8 @@ class AutoMatch:
     def __init__(self, args):
         now = datetime.now()
         self.formatted_date_time = now.strftime("%Y%m%d%H%M%S")
-        self.log_dir = args.base_dir + "/log_analysis/log/" + self.formatted_date_time
-        self.team_binary_dir = args.base_dir + "/teams/rc2023"
+        self.log_dir = os.getenv("MATCH_LOG_DIR", f"{args.base_dir}/log_analysis/log/{self.formatted_date_time}")
+        self.team_binary_dir = os.getenv("TEAM_DIR", f"{args.base_dir}/teams/rc2023")
         self.left_team_path_list = []
         self.right_team_path_list = []
         self.output_text = None
