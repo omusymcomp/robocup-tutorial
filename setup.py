@@ -33,7 +33,7 @@ def main():
         setup_tools.install_rcssserver()
         setup_tools.install_soccerwindow2()
         setup_tools.install_rcssmonitor()
-        setup_tools.install_fedit2()
+        # setup_tools.install_fedit2()
         setup_tools.install_loganalyzer3()
         setup_teams.install_teams()
         setup_teams.install_helios_base()
@@ -49,7 +49,7 @@ def main():
         setup_tools.install_rcssserver()
         setup_tools.install_soccerwindow2()
         setup_tools.install_rcssmonitor()
-        setup_tools.install_fedit2()
+        # setup_tools.install_fedit2()
         setup_tools.install_loganalyzer3()
     elif args.install_target == "teams":
         setup_teams.install_teams()

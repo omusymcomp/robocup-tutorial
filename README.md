@@ -54,7 +54,6 @@ This tool provides several command-line options to control the setup and install
     - `rcssserver`: Installs `rcssserver`
     - `soccerwindow2`: Installs `soccerwindow2`
     - `rcssmonitor`: Installs `rcssmonitor`
-    - `fedit2`: Installs `fedit2`
     - `loganalyzer3`: Installs `loganalyzer3`
     - `helios_base`: Installs `helios_base`
     - `helios`: Installs `helios`
@@ -104,8 +103,7 @@ $HOME
      │     ├ rcssserver 
      │     ├ rcssmonitor
      │     ├ soccerwindow2
-     │     ├ loganalyzer3
-     │     └ fedit2
+     │     └ loganalyzer3
      │
      └ teams  
            ├ rc2022 
@@ -227,7 +225,6 @@ By following these steps, you can manually initiate and observe a match in the R
 - **[rcssmonitor](https://github.com/rcsoccersim/rcssmonitor)**
 - **[soccerwindow2](https://github.com/helios-base/soccerwindow2)**
 - **[loganalyzer3](https://github.com/opusymcomp/loganalyzer3)**
-- **[fedit2](https://github.com/helios-base/fedit2)**
 - **[helios-base](https://github.com/helios-base/helios-base)**
 
 
