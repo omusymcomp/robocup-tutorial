@@ -56,7 +56,6 @@ This tool provides several command-line options to control the setup and install
     - `rcssmonitor`: Installs `rcssmonitor`
     - `loganalyzer3`: Installs `loganalyzer3`
     - `helios_base`: Installs `helios_base`
-    - `helios`: Installs `helios`
   - Default: `all`
 
   - Example:  

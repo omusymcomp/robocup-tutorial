@@ -11,7 +11,7 @@ def main():
     parser.add_argument("-d", "--base_dir", dest="base_dir", default=os.path.expandvars("$HOME/rcss"), help="Specify the base directory for environment setup")
     parser.add_argument("-t", "--install_target", dest="install_target", default="all",
                         choices=["all", "minisetup", "tools", "librcsc", "rcssserver", "soccerwindow2",
-                                 "rcssmonitor", "fedit2", "helios_base", "helios", "loganalyzer3", "teams"],
+                                 "rcssmonitor", "fedit2", "helios_base", "loganalyzer3", "teams"],
                         help="Specify the installation target. 'all' installs everything, 'minisetup' installs the minimal setup required for execution, and specific tools or teams are installed if specified.")
     parser.add_argument("-j", "--jobs", type=int, dest="jobs", help="Specify the number of jobs to run simultaneously during compilation (make -j option)")
     parser.add_argument("--upgrade_packages", action="store_true", dest="upgrade_packages", help="Specify if package updates should be performed before compiling")
