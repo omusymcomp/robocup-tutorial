@@ -148,7 +148,7 @@ This script provides several command-line options to control match settings:
     python3 auto_match.py -l HELIOS2023 -r CYRUS
     ```
 
-- `-n` or `-match_number`
+- `-n` or `--match_number`
   - Description: Specify the number of matches to be played.
   - Default: `3`
   - Example:
